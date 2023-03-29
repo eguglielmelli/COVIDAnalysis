@@ -12,7 +12,7 @@ public class Display {
         this.analyzer = analyzer;
     }
 
-    public void displayData() {
+    public void displayData() throws Exception {
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please choose from the list of options: \n0: Exit the program \n1: Show available options " +
@@ -30,7 +30,7 @@ public class Display {
             case 1:
                 return;
             case 2:
-                analyzer.totalPopulation();
+                System.out.println(analyzer.totalPopulation());
                 return;
             case 3:
                 System.out.println("partial or full");
