@@ -1,12 +1,18 @@
 package edu.upenn.cit594.processor;
 
 
-public class Analyzer {
+import edu.upenn.cit594.datamanagement.Reader;
 
+public class Analyzer {
+    private Reader reader;
+
+    public Analyzer(Reader reader) {
+        this.reader = reader;
+    }
     public void totalPopulation() {
 
     }
-    public void vaccinationsPerCapita() {
+    public void vaccinationsPerCapita(String partialOrFull,String date) {
 
     }
     public void averagePropertyValue(String ZIP) {
