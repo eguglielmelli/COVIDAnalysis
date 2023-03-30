@@ -1,26 +1,36 @@
 package edu.upenn.cit594.processor;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import edu.upenn.cit594.util.Zip;
 
 public class PopulationProcessor {
 	
 	private TreeMap<String, Zip> data = null;
+    private HashMap<String,Integer> memoTable = new HashMap<>();
 
 
     public PopulationProcessor(TreeMap<String, Zip> data) {
     	this.data = data;
 	}
-    
-    // Check memoization techniques (Module 13). Might need to refactor...
-	protected int totalPopulation() {
+
+    public int doCalculation() {
         int sum = 0;
-        for(Map.Entry<String, Zip> entry : data.entrySet()) {
-            sum += entry.getValue().getTotalPopulation();
+        for(String code : data.keySet()) {
+            Zip zip = data.get(code);
+            sum += zip.getTotalPopulation();
         }
         return sum;
     }
-    
+
+    // memoization should be done correctly here, feel free to make changes if needed.
+	protected int totalPopulation() {
+        String code = data.keySet().toString();
+        if(memoTable.containsKey(code)) return memoTable.get(code);
+        else {
+            int totalPopulation = doCalculation();
+            memoTable.put(code,totalPopulation);
+            return totalPopulation;
+        }
+    }
 }
