@@ -15,7 +15,8 @@ public class PropertyProcessor {
     	this.data = data;
 	}
 
-	private int calculateAvgPropertyVal(String zipCode,PropertyComparator comparator) {
+	private int calculateAvgVal(String zipCode,PropertyComparator comparator) {
+		if(!data.containsKey(zipCode)) return 0;
 		Zip instance = data.get(zipCode);
 		float sum = 0;
 		int count = 0;
@@ -35,7 +36,7 @@ public class PropertyProcessor {
 		if(memoTable.containsKey(zipCode)) return memoTable.get(zipCode);
 		else {
 			MarketValueComparator comparator = new MarketValueComparator();
-			int avgPropVal = calculateAvgPropertyVal(zipCode,comparator);
+			int avgPropVal = calculateAvgVal(zipCode,comparator);
 			memoTable.put(zipCode,avgPropVal);
 			return avgPropVal;
 		}
@@ -46,7 +47,7 @@ public class PropertyProcessor {
 		if(memoTable.containsKey(zipCode)) return memoTable.get(zipCode);
 		else {
 			AvgLivableAreaComparator comparator = new AvgLivableAreaComparator();
-			int avgPropVal = calculateAvgPropertyVal(zipCode,comparator);
+			int avgPropVal = calculateAvgVal(zipCode,comparator);
 			memoTable.put(zipCode,avgPropVal);
 			return avgPropVal;
 		}
