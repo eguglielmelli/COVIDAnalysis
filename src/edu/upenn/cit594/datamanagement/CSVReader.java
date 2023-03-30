@@ -8,8 +8,6 @@ public class CSVReader {
 	protected BufferedReader reader;
 	protected boolean end = false;
 	
-	// TODO: Check edge cases from HOMEWORK 7
-
     public String[] readRow() throws Exception {
   	  // Initialize a list to store the fields of the row
   	  List<String> fields = new ArrayList<>();

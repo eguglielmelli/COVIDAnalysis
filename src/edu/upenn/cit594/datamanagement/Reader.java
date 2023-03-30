@@ -18,6 +18,7 @@ public class Reader {
 		setInputs(inputs);
 		new PopulationReader(populationFilename, data);
 		new PropertyReader(propertyFilename, data);
+		new CovidReader(covidFilename, data);
 	}
 
 	private void setInputs(String[] inputs) throws Exception {

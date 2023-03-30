@@ -1,18 +1,18 @@
 package edu.upenn.cit594.util;
 
-import java.util.Date;
-
 public class Covid {
 	
-	private Date date;
+	private String date;
 	private int partiallyVaccinated;
 	private int fullyVaccinated;
 	
-    public Covid(Date date) {
+    public Covid(String date, int partiallyVaccinated, int fullyVaccinated) {
         this.date = date;
+        this.partiallyVaccinated = partiallyVaccinated;
+        this.fullyVaccinated = fullyVaccinated;
     }
     
-    public Date getDate() {
+    public String getDate() {
     	return date;
     }
     

@@ -11,7 +11,7 @@ public class PopulationReader extends CSVReader {
 	
 	private String filename;
 	
-	PopulationReader(String input, TreeMap<String, Zip> data) throws Exception {
+	protected PopulationReader(String input, TreeMap<String, Zip> data) throws Exception {
 		this.filename = input;
 		readPopulation(data);
 	}
@@ -39,7 +39,7 @@ public class PopulationReader extends CSVReader {
         	}
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new Exception("READER: Error reading population file");
+			throw new Exception("Error reading population file. Program exiting...");
 		}
 				
 	}
