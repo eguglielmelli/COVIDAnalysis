@@ -1,14 +1,14 @@
 package edu.upenn.cit594.ui;
-import edu.upenn.cit594.processor.Analyzer;
+import edu.upenn.cit594.processor.Processor;
 
 import java.util.Locale;
 import java.util.Scanner;
 
 public class Display {
 
-    private Analyzer analyzer;
+    private Processor analyzer;
 
-    public Display(Analyzer analyzer) {
+    public Display(Processor analyzer) {
         this.analyzer = analyzer;
     }
 
@@ -30,7 +30,7 @@ public class Display {
             case 1:
                 return;
             case 2:
-                System.out.println(analyzer.totalPopulation());
+                System.out.println(analyzer.getTotalPopulation());
                 return;
             case 3:
                 System.out.println("partial or full");
@@ -38,23 +38,23 @@ public class Display {
                 if(next.equals("partial") || next.equals("full")) {
                     System.out.println("Please enter the date in YYYY-MM-DD format");
                     String date = scanner.next();
-                    analyzer.vaccinationsPerCapita(next,date);
+                    analyzer.getVaccinationsPerCapita(next,date);
                     return;
                 }
             case 4:
                 System.out.println("Please specify the ZIP code you would like to see the average property value");
                 String zipCode = scanner.next();
-                analyzer.averagePropertyValue(zipCode);
+                analyzer.getAveragePropertyValue(zipCode);
                 return;
             case 5:
                 System.out.println("Please specify the ZIP code you would like to see average livable area");
                 String zip = scanner.next();
-                analyzer.averageTotalLivableArea(zip);
+                analyzer.getAverageTotalLivableArea(zip);
                 return;
             case 6:
                 System.out.println("Please specify the ZIP code you would like to see total market value per capita");
                 String nextZip = scanner.next();
-                analyzer.totalMarketValuePerCapita(nextZip);
+                analyzer.getTotalMarketValuePerCapita(nextZip);
                 return;
             case 7:
                 System.out.println("This will be our custom feature");

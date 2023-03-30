@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.TreeMap;
 
 import edu.upenn.cit594.datamanagement.Reader;
+import edu.upenn.cit594.processor.Processor;
 import edu.upenn.cit594.util.Covid;
 import edu.upenn.cit594.util.Zip;
 
@@ -16,6 +17,8 @@ public class Main {
 				"--covid=covid_data.csv", "--properties=downsampled_properties.csv"};
 		try {
 			Reader reader = new Reader(arguments);
+			Processor processor = new Processor(reader);
+			
 			TreeMap<String, Zip> data = reader.getData();
 			Zip sample = data.get("19119");
 			
@@ -27,6 +30,8 @@ public class Main {
 			HashMap<String, Covid> cases = sample.getCovidCases();
 			System.out.println("Partially Vax: " + cases.get("2021-03-25").getPartiallyVaccinated());
 			System.out.println("Fully Vax: " + cases.get("2021-03-25").getFullyVaccinated());
+			// Supposed to be 1603797
+			System.out.println("Total Population: " + processor.getTotalPopulation());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

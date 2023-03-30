@@ -1,12 +1,14 @@
 package edu.upenn.cit594.util;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Zip {
 	
 	private String zipCode;
-    private float marketValue = -1;
-    private float totalArea = -1;
+    private List<Float> marketValue = new LinkedList<Float>();
+    private List<Float> totalArea = new LinkedList<Float>();
     private int totalPopulation = -1;
     private HashMap<String, Covid> covidCases = new HashMap<String, Covid>();
 
@@ -18,20 +20,20 @@ public class Zip {
     	return zipCode;
     }
 
-    public float getMarketValue() {
+    public List<Float> getMarketValue() {
         return marketValue;
     }
 
-    public void setMarketValue(float marketValue) {
-        this.marketValue = marketValue;
+    public void setMarketValue(float value) {
+        marketValue.add(value);
     }
 
-    public float getTotalArea() {
+    public List<Float> getTotalArea() {
         return totalArea;
     }
 
-    public void setTotalArea(float totalArea) {
-        this.totalArea = totalArea;
+    public void setTotalArea(float area) {
+        totalArea.add(area);
     }
 
     public int getTotalPopulation() {
@@ -44,6 +46,10 @@ public class Zip {
     
     public HashMap<String, Covid> getCovidCases() {
     	return covidCases;
+    }
+    
+    public Covid getCovidCasesForDate(String date) {
+    	return covidCases.get(date);
     }
     
 }

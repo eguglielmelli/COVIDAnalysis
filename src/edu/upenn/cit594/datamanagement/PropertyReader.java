@@ -34,20 +34,19 @@ public class PropertyReader extends CSVReader {
         		if(!data.containsKey(zip)) {
         			data.put(zip, new Zip(zip));
         			data.get(zip).setMarketValue(0);
-        			data.get(zip).setTotalArea(0);
-        			
+        			data.get(zip).setTotalArea(0);        			
         		}
+        		
         		if(marketValue != -1) {
-        			float currentMarketValue = data.get(zip).getMarketValue();
-        			data.get(zip).setMarketValue(currentMarketValue + marketValue);
+        			data.get(zip).setMarketValue(marketValue);
         		}
         		if(totalLivableArea != -1) {
-        			float currentTotalLivableArea = data.get(zip).getTotalArea();
-        			data.get(zip).setTotalArea(currentTotalLivableArea + totalLivableArea);
+        			data.get(zip).setTotalArea(totalLivableArea);
         		}
         	}
         	
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new Exception("Error reading property file. Program exiting...");
 		}	
 	}
