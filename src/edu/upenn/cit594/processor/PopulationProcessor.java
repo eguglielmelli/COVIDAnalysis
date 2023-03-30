@@ -14,7 +14,7 @@ public class PopulationProcessor {
     	this.data = data;
 	}
 
-    public int doCalculation() {
+    private int doCalculation() {
         int sum = 0;
         for(String code : data.keySet()) {
             Zip zip = data.get(code);
