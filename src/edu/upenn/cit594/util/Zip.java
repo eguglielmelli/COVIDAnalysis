@@ -1,25 +1,22 @@
 package edu.upenn.cit594.util;
 
+import java.util.Date;
+import java.util.HashMap;
+
 public class Zip {
+	
+	private String zipCode ;
+    private float marketValue = -1;
+    private float totalArea = -1;
+    private int totalPopulation = -1;
+    private HashMap<Date, Covid> covidCases = new HashMap<Date, Covid>();
 
-    private String covidDate;
-    private float marketValue;
-    private float totalArea;
-    private float totalPopulation;
-
-    public Zip(String covidDate,float marketValue,float totalArea,float totalPopulation) {
-        this.covidDate = covidDate;
-        this.marketValue = marketValue;
-        this.totalArea = totalArea;
-        this.totalPopulation = totalPopulation;
+    public Zip(String zipCode) {
+        this.zipCode = zipCode;
     }
-
-    public String getCovidDate() {
-        return covidDate;
-    }
-
-    public void setCovidDate(String covidDate) {
-        this.covidDate = covidDate;
+    
+    public String getZipCode() {
+    	return zipCode;
     }
 
     public float getMarketValue() {
@@ -38,11 +35,16 @@ public class Zip {
         this.totalArea = totalArea;
     }
 
-    public float getTotalPopulation() {
+    public int getTotalPopulation() {
         return totalPopulation;
     }
 
-    public void setTotalPopulation(float totalPopulation) {
+    public void setTotalPopulation(int totalPopulation) {
         this.totalPopulation = totalPopulation;
     }
+    
+    public HashMap<Date, Covid> getCovidCases() {
+    	return covidCases;
+    }
+    
 }

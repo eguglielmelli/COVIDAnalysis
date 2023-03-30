@@ -1,6 +1,9 @@
 package edu.upenn.cit594.datamanagement;
 
+import java.util.TreeMap;
 import java.util.regex.Pattern;
+
+import edu.upenn.cit594.util.Zip;
 
 public class Reader {
 	
@@ -9,14 +12,12 @@ public class Reader {
 	protected String propertyFilename = null;
 	protected String populationFilename = null;
 	protected String logFilename = null;
-	protected CovidReader covid;
-	protected PropertyReader property;
-	protected PopulationReader population;
+	protected TreeMap<String, Zip> data = new TreeMap<String, Zip>();
 	
 	public Reader(String[] inputs) throws Exception {
 		setInputs(inputs);
-		population = new PopulationReader(populationFilename);
-		property = new PropertyReader(propertyFilename);
+		new PopulationReader(populationFilename, data);
+		new PropertyReader(propertyFilename, data);
 	}
 
 	private void setInputs(String[] inputs) throws Exception {
@@ -42,7 +43,5 @@ public class Reader {
 	}
 	
 
-	public CovidReader getCovid() {return covid;}
-	public PropertyReader getProperty() {return property;}
-	public PopulationReader getPopulation() {return population;}
+	public TreeMap<String, Zip> getData() {return data;}
 }

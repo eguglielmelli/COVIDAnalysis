@@ -2,56 +2,58 @@ package edu.upenn.cit594.datamanagement;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.TreeMap;
+
+import edu.upenn.cit594.util.Zip;
 
 public class PropertyReader extends CSVReader {
 	
 	private String filename;
-	private HashMap<String, List<Double>> propertyData; 
 	
-	PropertyReader(String input) {
+	PropertyReader(String input, TreeMap<String, Zip> data) throws Exception {
 		this.filename = input;
+		readProperty(data);
 	}
 	
-	public HashMap<String, List<Double>> getData() throws Exception {
-		propertyData = new HashMap<String, List<Double>>();
-		int zipIndex = -1;
-		int valueIndex = -1;
-		int areaIndex = -1;
+	public void readProperty(TreeMap<String, Zip> data) throws Exception {
 		
 		try {
         	reader = new BufferedReader(new FileReader(filename));
         	String[] header = readRow();
-        	String[] contents;
+        	int[] indexes = getIndexes(header);
         	
-        	for(int i = 0; i < header.length; i++) {
-        		if(header[i].equals("zip_code")) {zipIndex = i;}
-        		if(header[i].equals("market_value")) {valueIndex = i;}
-        		if(header[i].equals("total_livable_area")) {areaIndex = i;}
-        	}
-        	if(zipIndex == -1 || valueIndex == -1 || areaIndex == -1) {
-        		throw new Exception();
-        	}
-   
+        	String[] contents;
         	while((contents = readRow()) != null) {
-        		for(String a : contents) {
-        			System.out.println(a);
+        		String zip = contents[indexes[0]];
+        		float marketValue = Float.parseFloat(contents[indexes[1]]);
+        		float totalLivableArea = Float.parseFloat(contents[indexes[2]]);
+        		
+        		if(!data.containsKey(zip)) {
+        			data.put(zip, new Zip(zip));
         		}
-        		List<Double> parsedValues = new LinkedList<>();
-        		parsedValues.add(Double.parseDouble(contents[valueIndex]));
-        		parsedValues.add(Double.parseDouble(contents[areaIndex]));
-        		propertyData.put(contents[zipIndex], parsedValues);
+
+    			data.get(zip).setMarketValue(marketValue);
+    			data.get(zip).setTotalArea(totalLivableArea);
 
         	}
         	
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new Exception("READER: Error reading population file");
-		}
-				
-		return propertyData;
+		}	
 	}
-
+	
+	public int[] getIndexes(String[] header) throws Exception {
+		int[] indexes = {-1,-1,-1};
+		
+    	for(int i = 0; i < header.length; i++) {
+    		if(header[i].equals("zip_code")) {indexes[0] = i;}
+    		if(header[i].equals("market_value")) {indexes[1] = i;}
+    		if(header[i].equals("total_livable_area")) {indexes[2] = i;}
+    	}
+    	if(indexes[0] == -1 || indexes[1] == -1 || indexes[2] == -1) {
+    		throw new Exception();
+    	}
+    	
+		return indexes;
+	}
 }
