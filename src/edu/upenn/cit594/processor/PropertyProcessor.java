@@ -1,5 +1,7 @@
 package edu.upenn.cit594.processor;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.TreeMap;
 
 import edu.upenn.cit594.util.Zip;
@@ -7,46 +9,50 @@ import edu.upenn.cit594.util.Zip;
 public class PropertyProcessor {
 	
 	private TreeMap<String, Zip> data = null;
+	private HashMap<String,Integer> memoTable = new HashMap<>();
 	
     public PropertyProcessor(TreeMap<String, Zip> data) {
     	this.data = data;
 	}
-    
-    // REFACTOR TO IMPLEMENT STRATEGY PATTERN  (MODULE 11)
-	public int averagePropertyValue(String zipCode) {
-		if(!data.containsKey(zipCode)) {return 0;}
+
+	private int calculateAvgPropertyVal(String zipCode,PropertyComparator comparator) {
 		Zip instance = data.get(zipCode);
 		float sum = 0;
 		int count = 0;
-		if(!instance.getMarketValue().isEmpty()) {
-			for(Float number : instance.getMarketValue()) {
+		List<Float> list = comparator.getList(instance);
+		if (!list.isEmpty()) {
+			for (Float number : list) {
 				sum += number;
 				count++;
 			}
-			return (int) sum/count;
+			return (int) sum / count;
 		}
 		return 0;
+	}
+
+    // Strategy method implemented
+	public int averagePropertyValue(String zipCode) {
+		if(memoTable.containsKey(zipCode)) return memoTable.get(zipCode);
+		else {
+			MarketValueComparator comparator = new MarketValueComparator();
+			int avgPropVal = calculateAvgPropertyVal(zipCode,comparator);
+			memoTable.put(zipCode,avgPropVal);
+			return avgPropVal;
+		}
     }
 	
-    // REFACTOR TO IMPLEMENT STRATEGY PATTERN  (MODULE 11)
+    // Strategy pattern should be correct, will visit again if we need to make changes
     public int averageTotalLivableArea(String zipCode) {
-		if(!data.containsKey(zipCode)) {return 0;}
-		Zip instance = data.get(zipCode);
-		float sum = 0;
-		int count = 0;
-		if(!instance.getMarketValue().isEmpty()) {
-			for(Float number : instance.getTotalArea()) {
-				sum += number;
-				count++;
-			}
-			return (int) sum/count;
+		if(memoTable.containsKey(zipCode)) return memoTable.get(zipCode);
+		else {
+			AvgLivableAreaComparator comparator = new AvgLivableAreaComparator();
+			int avgPropVal = calculateAvgPropertyVal(zipCode,comparator);
+			memoTable.put(zipCode,avgPropVal);
+			return avgPropVal;
 		}
-		return 0;
     }
-    
-    // Check memoization techniques (Module 13). Might need to refactor...
-    public int totalMarketValuePerCapita(String zipCode) {
-		if(!data.containsKey(zipCode)) {return 0;}
+
+	private int MarketValuePerCapitaCalculator(String zipCode) {
 		Zip instance = data.get(zipCode);
 		float sum = 0;
 		int count = instance.getTotalPopulation();
@@ -57,6 +63,16 @@ public class PropertyProcessor {
 			return (int) sum/count;
 		}
 		return 0;
+	}
+
+    // memoization should be done, will redo if need be
+    public int totalMarketValuePerCapita(String zipCode) {
+		if(memoTable.containsKey(zipCode)) return memoTable.get(zipCode);
+		else{
+			int mvPerCapita = MarketValuePerCapitaCalculator(zipCode);
+			memoTable.put(zipCode,mvPerCapita);
+			return mvPerCapita;
+		}
     }
 
 }
