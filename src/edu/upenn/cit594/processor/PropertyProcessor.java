@@ -9,7 +9,9 @@ import edu.upenn.cit594.util.Zip;
 public class PropertyProcessor {
 	
 	private TreeMap<String, Zip> data = null;
-	private HashMap<String,Integer> memoTable = new HashMap<>();
+	private HashMap<String,Integer> memoTablePropVal = new HashMap<>();
+	private HashMap<String,Integer> memoTableLivableAreaVal = new HashMap<>();
+	private HashMap<String,Integer> marketValPerCap = new HashMap<>();
 	
     public PropertyProcessor(TreeMap<String, Zip> data) {
     	this.data = data;
@@ -33,22 +35,22 @@ public class PropertyProcessor {
 
     // Strategy method implemented
 	public int averagePropertyValue(String zipCode) {
-		if(memoTable.containsKey(zipCode)) return memoTable.get(zipCode);
+		if(memoTablePropVal.containsKey(zipCode)) return memoTablePropVal.get(zipCode);
 		else {
 			MarketValueComparator comparator = new MarketValueComparator();
 			int avgPropVal = calculateAvgVal(zipCode,comparator);
-			memoTable.put(zipCode,avgPropVal);
+			memoTablePropVal.put(zipCode,avgPropVal);
 			return avgPropVal;
 		}
     }
 	
     // Strategy pattern should be correct, will visit again if we need to make changes
     public int averageTotalLivableArea(String zipCode) {
-		if(memoTable.containsKey(zipCode)) return memoTable.get(zipCode);
+		if(memoTableLivableAreaVal.containsKey(zipCode)) return memoTableLivableAreaVal.get(zipCode);
 		else {
 			AvgLivableAreaComparator comparator = new AvgLivableAreaComparator();
 			int avgPropVal = calculateAvgVal(zipCode,comparator);
-			memoTable.put(zipCode,avgPropVal);
+			memoTableLivableAreaVal.put(zipCode,avgPropVal);
 			return avgPropVal;
 		}
     }
@@ -68,10 +70,10 @@ public class PropertyProcessor {
 
     // memoization should be done, will redo if need be
     public int totalMarketValuePerCapita(String zipCode) {
-		if(memoTable.containsKey(zipCode)) return memoTable.get(zipCode);
+		if(marketValPerCap.containsKey(zipCode)) return marketValPerCap.get(zipCode);
 		else{
 			int mvPerCapita = MarketValuePerCapitaCalculator(zipCode);
-			memoTable.put(zipCode,mvPerCapita);
+			marketValPerCap.put(zipCode,mvPerCapita);
 			return mvPerCapita;
 		}
     }
