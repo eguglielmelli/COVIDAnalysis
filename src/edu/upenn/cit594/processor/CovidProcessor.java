@@ -20,8 +20,9 @@ public class CovidProcessor {
 
     // Memoization may need a little more work, will revisit this one
 	public TreeMap<Integer,Double> vaccinationsPerCapita(String choice, String date) {
-		if(memoTable.containsKey(choice)) {
-			return memoTable.get(choice);
+		String key = choice + "-" + date;
+		if(memoTable.containsKey(key)) {
+			return memoTable.get(key);
 		}
 		TreeMap<Integer, Double> vaccinations = new TreeMap<Integer, Double>();
 		DecimalFormat rounder = new DecimalFormat("#.0000");
@@ -41,7 +42,7 @@ public class CovidProcessor {
         	double perCapita = (double) totalVaccinated/population;
             vaccinations.put(zip, Double.parseDouble(rounder.format(perCapita)));
           }
-		memoTable.put(choice,vaccinations);
+		memoTable.put(key,vaccinations);
 		return vaccinations;
     }
 	
