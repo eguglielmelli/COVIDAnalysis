@@ -70,6 +70,7 @@ public class PropertyProcessor {
 
     // memoization should be done, will redo if need be
     public int totalMarketValuePerCapita(String zipCode) {
+		if(!data.containsKey(zipCode)) return 0;
 		if(marketValPerCap.containsKey(zipCode)) return marketValPerCap.get(zipCode);
 		else{
 			int mvPerCapita = MarketValuePerCapitaCalculator(zipCode);
