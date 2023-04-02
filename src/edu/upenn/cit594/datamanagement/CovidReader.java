@@ -2,11 +2,8 @@ package edu.upenn.cit594.datamanagement;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.TreeMap;
-import java.util.regex.Pattern;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,19 +11,30 @@ import org.json.simple.parser.JSONParser;
 import edu.upenn.cit594.util.Covid;
 import edu.upenn.cit594.util.Zip;
 
-public class CovidReader extends CSVReader {
+/**
+ * This class reads a formatted population JSON or CSV file and adds it to the data structure of the reader
+ */
+public class CovidReader extends GeneralReader {
 	
+	// The filename is the only private parameter
 	private String filename;
 	
+	// Constructor: requires the filename to read from and the data structure to add items to
 	protected CovidReader(String input, TreeMap<String, Zip> data) throws Exception {
 		this.filename = input;
 		readCovid(data);
 	}
 	
+	/**
+	 * Method to determine whether to call the JSON method or the CSV Method and read the Covid data
+	 * @param data
+	 * @throws Exception
+	 */
 	private void readCovid(TreeMap<String, Zip> data) throws Exception {
+		// Split the filename based on any periods in the String
 		String[] fileEnding = filename.trim().split("\\.");
 
-		// If file ends in txt, call the TXT method
+		// If file ends in csv, call the CSV method
 		if(fileEnding[fileEnding.length-1].toLowerCase().equals("csv")) {
 			readCsvCovid(data);
 		// If file ends in json, call the JSON method
@@ -38,69 +46,93 @@ public class CovidReader extends CSVReader {
 		}		
 	}
 	
+	/**
+	 * Method to read the Covid data from the JSON file and add it to the data structure
+	 * @param data (TreeMap<String, Zip>) : data structure to update population information
+	 * @throws Exception : if error when reading the file
+	 */
 	private void readJsonCovid(TreeMap<String, Zip> data) throws Exception {
 		
 		try {
 			// Open the file for reading using JSON parser
 			JSONArray jsonArray = (JSONArray) new JSONParser().parse(new FileReader(filename));
 			
-			// Loop through each object, extract relevant information to Java objects, and add it to tweet list
+			// Loop through each object, extract relevant information to Java objects
 			for(Object obj : jsonArray) {
 				JSONObject jo = (JSONObject) obj;
+				// If the object does not contain Zip Code or Timestamp, skip this iteration
 				if(!jo.containsKey("zip_code") || !jo.containsKey("etl_timestamp")) {continue;}
-				String zip = validateZip(Long.toString((Long) jo.get("zip_code")));
-				String date = validateDate((String) jo.get("etl_timestamp"));
-				int partiallyVaccinated = 0;
-				int fullyVaccinated = 0;
 				
+        		// Get the Zip code from the object and validate it using the helper function
+        		// CONDITION: Zip code must have exactly 5 digits
+				String zip = validateZip(Long.toString((Long) jo.get("zip_code")), "^[0-9]{5}$");
+				
+        		// Get the date from the object and validate it using the helper function
+        		// CONDITION: Date must contain string in the format YYYY:MM:DD. hh:mm:ss is optional.
+				String date = validateDate((String) jo.get("etl_timestamp"));
+				
+				// Create new integers for partially and fully vaccinated
+				int partiallyVaccinated = -1;
+				int fullyVaccinated = -1;
+				
+				// If the object contains the required date, validate it using the helper functions
+        		// CONDITION: Count must contain an integer
 				if(jo.containsKey("partially_vaccinated")) {
-					partiallyVaccinated = validateCount(Long.toString((Long) jo.get("partially_vaccinated")));
+					partiallyVaccinated = validateInteger(Long.toString((Long) jo.get("partially_vaccinated")), "^-?\\d+$");
 				}
 				if(jo.containsKey("fully_vaccinated")) {
-					fullyVaccinated = validateCount(Long.toString((Long) jo.get("fully_vaccinated")));
+					fullyVaccinated = validateInteger(Long.toString((Long) jo.get("fully_vaccinated")), "^-?\\d+$");
 				}
 				
+				// If the retrieved Zip or date are invalid, skip this iteration
         		if(zip == null || date == null) {continue;}
 				
-        		if(!data.containsKey(zip)) {
-        			data.put(zip, new Zip(zip));
-        		}
-        		
-        		HashMap<String, Covid> covidCases = data.get(zip).getCovidCases();
-        		
-        		covidCases.put(date, new Covid(date, partiallyVaccinated, fullyVaccinated));
+        		// Else, add validated data to data structure
+        		addCovidToData(zip, date, partiallyVaccinated, fullyVaccinated, data);
 			}
 						
 	    // Generalize all error messages to a human readable error pinpointing where the issue is
         } catch (Exception e) {
-        	e.printStackTrace();
 			throw new Exception("Error reading Covid Json file. Program exiting...");
 		}
 	}
 
+	/**
+	 * Method to read the Covid data from the CSV file and add it to the data structure
+	 * @param data (TreeMap<String, Zip>) : data structure to update population information
+	 * @throws Exception : if error when reading the file
+	 */
 	private void readCsvCovid(TreeMap<String, Zip> data) throws Exception {
 		
 		try {
+			// Try to create a reader with the given filename
         	reader = new BufferedReader(new FileReader(filename));
+        	// Get the header (first row) and determine the indexes we need using the helper function
         	String[] header = readRow();
-        	int[] indexes = getIndexes(header);
+        	String[] arguments = {"zip_code", "etl_timestamp", "partially_vaccinated", "fully_vaccinated"};
+        	int[] indexes = getIndexes(header, arguments);
         	
+        	// Create a String array for the contents and loop until the whole file has been read
         	String[] contents;
         	while((contents = readRow()) != null) {
-        		String zip = validateZip(contents[indexes[0]]);
-        		String date = validateDate(contents[indexes[1]]);
-        		int partiallyVaccinated = validateCount(contents[indexes[2]]);
-        		int fullyVaccinated = validateCount(contents[indexes[3]]);
+        		// Get the Zip code from the array of contents and validate it using the helper function
+        		// CONDITION: Zip code must have exactly 5 digits
+        		String zip = validateZip(contents[indexes[0]], "^[0-9]{5}$");
         		
+        		// Get the date from the array of contents and validate it using the helper function
+        		// CONDITION: Date must contain string in the format YYYY:MM:DD. hh:mm:ss is optional.
+        		String date = validateDate(contents[indexes[1]]);
+        		
+        		// Get the partially and fully vaccinated counts and validate it using the helper function
+        		// CONDITION: Count must contain an integer
+        		int partiallyVaccinated = validateInteger(contents[indexes[2]], "^-?\\d+$");
+        		int fullyVaccinated = validateInteger(contents[indexes[3]], "^-?\\d+$");
+        		
+        		// If either of the parameters are invalid, skip this iteration of the loop
         		if(zip == null || date == null) { continue;}
         		
-        		if(!data.containsKey(zip)) {
-        			data.put(zip, new Zip(zip));
-        		}
-        		
-        		HashMap<String, Covid> covidCases = data.get(zip).getCovidCases();
-        		
-        		covidCases.put(date, new Covid(date, partiallyVaccinated, fullyVaccinated));
+        		// Else, add validated data to data structure
+        		addCovidToData(zip, date, partiallyVaccinated, fullyVaccinated, data);
         		
         	}
         	
@@ -109,55 +141,39 @@ public class CovidReader extends CSVReader {
 		}	
 	}
 	
-	private int[] getIndexes(String[] header) throws Exception {
-		int[] indexes = {-1,-1, -1,-1};
-		
-    	for(int i = 0; i < header.length; i++) {
-    		if(header[i].equals("zip_code")) {indexes[0] = i;}
-    		if(header[i].equals("etl_timestamp")) {indexes[1] = i;}
-    		if(header[i].equals("partially_vaccinated")) {indexes[2] = i;}
-    		if(header[i].equals("fully_vaccinated")) {indexes[3] = i;}
-    	}
-    	if(indexes[0] == -1 || indexes[1] == -1 || indexes[2] == -1 || indexes[3] == -1) {
-    		throw new Exception();
-    	}
-    	
-		return indexes;
-	}
-	
-	private String validateZip(String zip) {
-		String validatedZip = null;
-		Pattern pattern = Pattern.compile("^[0-9]{5}$");
-		
-		if(pattern.matcher(zip).find()) {
-			validatedZip = zip;
+	/**
+	 * This helper function adds the validated data into the data structure
+	 * @param zip (String) : validated Zip of this Covid data
+	 * @param date : validated Date of this Covid data
+	 * @param partiallyVaccinated (int) : number of partially vaccinated people in a given date
+	 * @param fullyVaccinated (int) : number of fully vaccinated people in a given date
+	 * @param data
+	 */
+	private void addCovidToData(String zip, String date, int partiallyVaccinated, int fullyVaccinated, TreeMap<String, Zip> data) {
+		// Otherwise, check whether the Zip code already exist in data and add it if it does not
+		if(!data.containsKey(zip)) {
+			data.put(zip, new Zip(zip));
 		}
 		
-		return validatedZip;
-	}
-	
-	private String validateDate(String date) throws ParseException {
-		String validatedDate = null;
-		Pattern pattern = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}$");
+		// Get the map with the covid cases for the given zip code
+		HashMap<String, Covid> covidCases = data.get(zip).getCovidCases();
 		
-		if(pattern.matcher(date).find()) {
-			String[] splitDate = date.split("\\s+", 2);
-			validatedDate = splitDate[0];
+		// If the map does not contain Covid cases for given date, then create one
+		if(!covidCases.containsKey(date)) {
+			covidCases.put(date, new Covid(date));
 		}
 		
-		return validatedDate;
-	}
-	
-	private int validateCount(String count) {
-		int validatedCount = 0;
-		Pattern pattern = Pattern.compile("^-?\\d+$");
+		// Retrieve cases for given date
+		Covid cases = covidCases.get(date);
 		
-		if(pattern.matcher(count).find()) {
-			validatedCount = Integer.parseInt(count);
+		// Add partially vaccinated if it is valid integer
+		if(partiallyVaccinated != -1) {
+			cases.setPartiallyVaccinated(partiallyVaccinated);
 		}
-
-		return validatedCount;
+		
+		// Add fully vaccinated if it is valid integer
+		if(fullyVaccinated != -1) {
+			cases.setPartiallyVaccinated(fullyVaccinated);
+		}
 	}
-	
-
 }

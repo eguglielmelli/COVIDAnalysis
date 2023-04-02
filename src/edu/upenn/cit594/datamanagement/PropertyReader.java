@@ -3,86 +3,75 @@ package edu.upenn.cit594.datamanagement;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.TreeMap;
-import java.util.regex.Pattern;
 
 import edu.upenn.cit594.util.Zip;
 
-public class PropertyReader extends CSVReader {
+/**
+ * This class reads a formatted property CSV file and adds it to the data structure of the reader
+ */
+public class PropertyReader extends GeneralReader {
 	
+	// The filename is the only private parameter
 	private String filename;
 	
+	// Constructor: requires the filename to read from and the data structure to add items to
 	protected PropertyReader(String input, TreeMap<String, Zip> data) throws Exception {
 		this.filename = input;
 		readProperty(data);
 	}
 	
+	/**
+	 * Method to read the property from the CSV file and add it to the data structure
+	 * @param data (TreeMap<String, Zip>) : data structure to update property information
+	 * @throws Exception : if error when reading the file
+	 */
 	private void readProperty(TreeMap<String, Zip> data) throws Exception {
 		
 		try {
+			// Try to create a reader with the given filename
         	reader = new BufferedReader(new FileReader(filename));
+        	// Get the header (first row) and determine the indexes we need using the helper function
         	String[] header = readRow();
-        	int[] indexes = getIndexes(header);
+        	String[] arguments = {"zip_code", "market_value", "total_livable_area"};
+        	int[] indexes = getIndexes(header, arguments);
         	
+        	// Create a String array for the contents and loop until the whole file has been read
         	String[] contents;
         	while((contents = readRow()) != null) {
-        		String zip = validateZip(contents[indexes[0]]);
-        		float marketValue = validateNumber(contents[indexes[1]]);
-        		float totalLivableArea = validateNumber(contents[indexes[2]]);
+        		// Get the Zip code from the array of contents and validate it using the helper function
+        		// CONDITION: Zip code must have 5 integer as the first characters
+        		String zip = validateZip(contents[indexes[0]], "^\\d{5}");
         		
+        		// Get the market value from the array of contents and validate it using the helper function
+        		// CONDITION: VAlue should be numeric (including decimal numbers:
+        		float marketValue = validateFloat(contents[indexes[1]], "^-?\\d*\\.?\\d+$");
+        		
+        		// Get the total livable area from the array of contents and validate it using the helper function
+        		// CONDITION: VAlue should be numeric (including decimal numbers
+        		float totalLivableArea = validateFloat(contents[indexes[2]], "^-?\\d*\\.?\\d+$");
+        		
+        		// If a valid Zip code has not been found in the line, skip this iteration
         		if(zip == null) { continue;}
         		
+        		// Otherwise, check whether the Zip code already exist in data and add it if it does not
         		if(!data.containsKey(zip)) {
         			data.put(zip, new Zip(zip));
         			data.get(zip).setMarketValue(0);
         			data.get(zip).setTotalArea(0);        			
         		}
         		
+        		// If the market value is valid, add it to the list in Zip code
         		if(marketValue != -1) {
         			data.get(zip).setMarketValue(marketValue);
         		}
+        		// If the total livable area is valid, add it to the list in Zip code
         		if(totalLivableArea != -1) {
         			data.get(zip).setTotalArea(totalLivableArea);
         		}
         	}
-        	
+        // Catch any exceptions and throw it as human readable error explaining where the issue is
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new Exception("Error reading property file. Program exiting...");
 		}	
-	}
-	
-	private int[] getIndexes(String[] header) throws Exception {
-		int[] indexes = {-1,-1,-1};
-		
-    	for(int i = 0; i < header.length; i++) {
-    		if(header[i].equals("zip_code")) {indexes[0] = i;}
-    		if(header[i].equals("market_value")) {indexes[1] = i;}
-    		if(header[i].equals("total_livable_area")) {indexes[2] = i;}
-    	}
-    	if(indexes[0] == -1 || indexes[1] == -1 || indexes[2] == -1) {
-    		throw new Exception();
-    	}
-    	
-		return indexes;
-	}
-	
-	private String validateZip(String zip) {
-		String validatedZip = null;
-		Pattern pattern = Pattern.compile("^\\d{5}");
-		
-		if(zip.length() >= 5 && pattern.matcher(zip).find()) {
-			validatedZip = zip.substring(0, 5);
-		}
-		return validatedZip;
-	}
-	
-	private float validateNumber(String number) {
-		float validatedNumber = -1;
-		Pattern pattern = Pattern.compile("^-?\\d*\\.?\\d+$");
-		
-		if(pattern.matcher(number).find()) {
-			validatedNumber = Float.parseFloat(number);
-		}
-		return validatedNumber;
 	}
 }
