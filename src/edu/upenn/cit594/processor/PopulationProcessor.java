@@ -18,7 +18,9 @@ public class PopulationProcessor {
         int sum = 0;
         for(String code : data.keySet()) {
             Zip zip = data.get(code);
-            sum += zip.getTotalPopulation();
+            if(zip.getTotalPopulation() != -1) {
+                sum += zip.getTotalPopulation();
+            }
         }
         return sum;
     }
