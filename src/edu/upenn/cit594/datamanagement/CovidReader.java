@@ -173,7 +173,7 @@ public class CovidReader extends GeneralReader {
 		
 		// Add fully vaccinated if it is valid integer
 		if(fullyVaccinated != -1) {
-			cases.setPartiallyVaccinated(fullyVaccinated);
+			cases.setFullyVaccinated	(fullyVaccinated);
 		}
 	}
 }

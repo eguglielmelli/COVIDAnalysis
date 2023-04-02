@@ -11,6 +11,7 @@ import edu.upenn.cit594.util.Zip;
 public class Reader {
 	
 	// Local arguments include the name of each file, the data structure to hold the data, and an array with which files were read
+	private String[] inputs = null;
 	protected String covidFilename = null;
 	protected String propertyFilename = null;
 	protected String populationFilename = null;
@@ -20,11 +21,7 @@ public class Reader {
 	
 	// Constructor: decides which inputs were provided and calls the appropriate readers
 	public Reader(String[] inputs) throws Exception {
-		setInputs(inputs);
-		//if(readFiles[0]) {Logger.setOrChangeDestination(logFilename);}
-        if(readFiles[1]) {new PopulationReader(populationFilename, data);}
-        if(readFiles[2]) {new CovidReader(covidFilename, data);}
-        if(readFiles[3]) {new PropertyReader(propertyFilename, data);}
+		this.inputs = inputs;
 	}
 
 	/**
@@ -32,7 +29,7 @@ public class Reader {
 	 * @param inputs (String []) : array of strings with the provided arguments
 	 * @throws Exception : if argument provided is not valid
 	 */
-	private void setInputs(String[] inputs) throws Exception {
+	protected void setInputs() throws Exception {
 		// Create a pattern to match the expected argument '--name=value'
 		Pattern pattern = Pattern.compile("^--(?<name>.+?)=(?<value>.+)$");
 		
@@ -40,7 +37,7 @@ public class Reader {
 		for(String input : inputs) {
 			// If it does not match the pattern, throw an exception
 			if(!pattern.matcher(input).find()) {
-				throw new Exception(" Argument not of form '--name=value'");
+				throw new Exception("Argument not of form '--name=value'");
 			}
 			// Otherwise, split based on the equals sign
 			String[] property = input.split("=");
@@ -68,9 +65,28 @@ public class Reader {
 
 	}
 	
-	// Getter method to return data structure
-	public TreeMap<String, Zip> getData() {return data;}
+	/**
+	 * Method to return data to the upper tier to be processed
+	 * @return data (TreeMap<String, Zip>) : Map with all the Zip classes and the relevant information from files
+	 * @throws Exception if any error occurs when reading the files
+	 */
+	public TreeMap<String, Zip> getData() throws Exception {
+		if (inputs == null) {
+			throw new Exception("Reader has not been initialized. Program exiting...");
+		}
+		if (data.isEmpty()) {
+			setInputs();
+			//if(readFiles[0]) {Logger.setOrChangeDestination(logFilename);}
+	        if(readFiles[1]) {new PopulationReader(populationFilename, data);}
+	        if(readFiles[2]) {new CovidReader(covidFilename, data);}
+	        if(readFiles[3]) {new PropertyReader(propertyFilename, data);}
+		}
+		return data;
+		}
 	
 	// Getter method to return array of which files were read
-	public boolean[] getReadFiles() {return readFiles;}
+	public boolean[] getReadFiles() throws Exception {
+		// If data has not been populated, populate it
+		return readFiles;
+		}
 }
