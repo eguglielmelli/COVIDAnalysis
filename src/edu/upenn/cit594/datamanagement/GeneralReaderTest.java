@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 class GeneralReaderTest {
 
+	// Test to check logic of helper function
 	@Test
     void testGetIndexes() throws Exception {
         String[] header = {"a", "b", "c", "d"};
@@ -28,6 +29,7 @@ class GeneralReaderTest {
         assertThrows(Exception.class, () -> reader.getIndexes(header, parameters3));
     }
 	
+	// Test to check logic of helper function
 	@Test
 	void testValidateZip() {
         GeneralReader reader = new GeneralReader();
@@ -36,6 +38,7 @@ class GeneralReaderTest {
         assertNull(reader.validateZip("19104", "\\d{6}"));
 	}
 	
+	// Test to check logic of helper function
 	@Test
 	void testValidateInteger() {
         GeneralReader reader = new GeneralReader();
@@ -45,6 +48,7 @@ class GeneralReaderTest {
 	    assertEquals(0, reader.validateInteger("0", "^-?\\d+$"));
 	}
 
+	// Test to check logic of helper function
 	@Test
 	void testValidateFloat() {
         GeneralReader reader = new GeneralReader();
@@ -52,13 +56,14 @@ class GeneralReaderTest {
 	    assertEquals(-1.0, reader.validateFloat("abc", "\\d+(\\.\\d+)?"), 0.001f);
 	}
 	
+	// Test to check logic of helper function
 	@Test
 	void testValidateDate() {
         GeneralReader reader = new GeneralReader();
 	    assertEquals("2022-05-01", reader.validateDate("2022-05-01 12:00:00"));
 	    assertNull(reader.validateDate("2022/05/01 12:00:00"));
 	}
-	
+	// Test to check CSV lexer using file easy1.csv from HW7 (well formatted)
 	@Test
 	void testReadRowEasy1() throws Exception {
         GeneralReader reader = new GeneralReader();
@@ -86,6 +91,7 @@ class GeneralReaderTest {
 		assertTrue(Arrays.equals(results.get(7), expected7));
 	}
 	
+	// Test to check CSV lexer using file easy2.csv from HW7 (embedded new line)
 	@Test
 	void testReadRowEasy2() throws Exception {
         GeneralReader reader = new GeneralReader();
@@ -111,6 +117,7 @@ class GeneralReaderTest {
 		assertTrue(Arrays.equals(results.get(6), expected6));
 	}
 	
+	// Test to check CSV lexer using file easy3.csv from HW7 (commas in the middle of field)
 	@Test
 	void testReadRowEasy3() throws Exception {
         GeneralReader reader = new GeneralReader();
@@ -124,6 +131,7 @@ class GeneralReaderTest {
 		assertTrue(Arrays.equals(results.get(0), expected0));
 	}
 	
+	// Test to check CSV lexer using file medium1.csv from HW7 (quotes in a field)
 	@Test
 	void testReadRowMedium1() throws Exception {
         GeneralReader reader = new GeneralReader();
@@ -141,6 +149,7 @@ class GeneralReaderTest {
 		assertTrue(Arrays.equals(results.get(2), expected2));
 	}
 	
+	// Test to check CSV lexer using file tricky.csv (quotes, new lines, etc.)
 	@Test
 	void testReadRowTricky() throws Exception {
         GeneralReader reader = new GeneralReader();

@@ -2,6 +2,7 @@ package edu.upenn.cit594.datamanagement;
 
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.util.Zip;
 
 /**
@@ -76,7 +77,7 @@ public class Reader {
 		}
 		if (data.isEmpty()) {
 			setInputs();
-			//if(readFiles[0]) {Logger.setOrChangeDestination(logFilename);}
+			if(readFiles[0]) {Logger.setDestination(logFilename);}
 	        if(readFiles[1]) {new PopulationReader(populationFilename, data);}
 	        if(readFiles[2]) {new CovidReader(covidFilename, data);}
 	        if(readFiles[3]) {new PropertyReader(propertyFilename, data);}

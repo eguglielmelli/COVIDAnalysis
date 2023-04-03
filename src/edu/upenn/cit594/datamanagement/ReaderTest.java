@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 class ReaderTest {
 
+	// Test to check valid inputs, including some inputs missing
 	@Test
 	void testValidSetInputs() throws Exception {
 		// All valid inputs
@@ -53,9 +54,9 @@ class ReaderTest {
 		assertTrue(validated4[3] == true);
 	}
 	
+	// Test to check one invalid argument
 	@Test
 	void testInvalidArgument() throws Exception {
-	    // All valid inputs
 	    String[] arg1 = {"--population=population.csv", "--log=events.log", 
 	            "--covid=covid_data.csv", "invalidargument"};
 	    Reader reader1 = new Reader(arg1);
@@ -65,9 +66,9 @@ class ReaderTest {
 	    assertEquals("Argument not of form '--name=value'", e.getMessage());
 	}
 	
+	// Test to check one unknown argument
 	@Test
 	void testUnknownArgument() throws Exception {
-	    // All valid inputs
 	    String[] arg1 = {"--population=population.csv", "--log=events.log", 
 	            "--covid=covid_data.csv", "--valuesamples=downsampled_properties.csv"};
 	    Reader reader1 = new Reader(arg1);
@@ -77,9 +78,9 @@ class ReaderTest {
 	    assertEquals("Provided invalid argument. Program exiting...", e.getMessage());
 	}
 	
+	// Test to check if the same argument is provided twice
 	@Test
 	void testDoubleArgument() throws Exception {
-	    // All valid inputs
 	    String[] arg1 = {"--population=population.csv", "--log=events.log", 
 	            "--covid=covid_data.csv", "--population=population.csv"};
 	    Reader reader1 = new Reader(arg1);

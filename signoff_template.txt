@@ -13,9 +13,9 @@ university code of academic integrity:
 Signed,
 Team: ###
 
-Author: YOUR NAME HERE
-Penn email: <YOUR-EMAIL-HERE@seas.upenn.edu>
-Date: YYYY-MM-DD
+Author: Gus Busolo
+Penn email: gusmbus@seas.upenn.edu
+Date: 2023-04-02
 
 Author: YOUR NAME HERE
 Penn email: <YOUR-EMAIL-HERE@seas.upenn.edu>

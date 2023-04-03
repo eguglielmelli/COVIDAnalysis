@@ -93,6 +93,7 @@ public class CovidReader extends GeneralReader {
 						
 	    // Generalize all error messages to a human readable error pinpointing where the issue is
         } catch (Exception e) {
+        	e.printStackTrace();
 			throw new Exception("Error reading Covid Json file. Program exiting...");
 		}
 	}
@@ -138,7 +139,9 @@ public class CovidReader extends GeneralReader {
         	
 		} catch (Exception e) {
 			throw new Exception("Error reading Covid Csv file. Program exiting...");
-		}	
+		} finally {
+			reader.close();
+		}
 	}
 	
 	/**
@@ -173,7 +176,7 @@ public class CovidReader extends GeneralReader {
 		
 		// Add fully vaccinated if it is valid integer
 		if(fullyVaccinated != -1) {
-			cases.setFullyVaccinated	(fullyVaccinated);
+			cases.setFullyVaccinated(fullyVaccinated);
 		}
 	}
 }

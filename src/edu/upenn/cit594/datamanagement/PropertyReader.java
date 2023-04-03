@@ -41,7 +41,7 @@ public class PropertyReader extends GeneralReader {
         		// Get the Zip code from the array of contents and validate it using the helper function
         		// CONDITION: Zip code must have 5 integer as the first characters
         		String zip = validateZip(contents[indexes[0]], "^\\d{5}");
-        		
+
         		// Get the market value from the array of contents and validate it using the helper function
         		// CONDITION: VAlue should be numeric (including decimal numbers:
         		float marketValue = validateFloat(contents[indexes[1]], "^-?\\d*\\.?\\d+$");
@@ -51,13 +51,12 @@ public class PropertyReader extends GeneralReader {
         		float totalLivableArea = validateFloat(contents[indexes[2]], "^-?\\d*\\.?\\d+$");
         		
         		// If a valid Zip code has not been found in the line, skip this iteration
-        		if(zip == null) { continue;}
+        		if(zip == null || zip.length() < 5) { continue;}
+        		else{ zip = zip.substring(0, 5);}
         		
         		// Otherwise, check whether the Zip code already exist in data and add it if it does not
         		if(!data.containsKey(zip)) {
-        			data.put(zip, new Zip(zip));
-        			data.get(zip).setMarketValue(0);
-        			data.get(zip).setTotalArea(0);        			
+        			data.put(zip, new Zip(zip));        			
         		}
         		
         		// If the market value is valid, add it to the list in Zip code
@@ -72,6 +71,8 @@ public class PropertyReader extends GeneralReader {
         // Catch any exceptions and throw it as human readable error explaining where the issue is
 		} catch (Exception e) {
 			throw new Exception("Error reading property file. Program exiting...");
-		}	
+		} finally {
+			reader.close();
+		}
 	}
 }

@@ -61,6 +61,8 @@ public class PopulationReader extends GeneralReader {
         // Catch any exceptions and throw it as human readable error explaining where the issue is
 		} catch (Exception e) {
 			throw new Exception("Error reading population file. Program exiting...");
+		} finally {
+			reader.close();
 		}
 				
 	}

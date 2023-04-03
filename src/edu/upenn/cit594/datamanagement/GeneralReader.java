@@ -103,7 +103,7 @@ public class GeneralReader {
   	  
   	  // Convert list into array and return it 
   	  String[] row = fields.toArray(new String[fields.size()]);
-  	  
+
   	  // If there are no fields to display and the end of the file has been reached, return null
   	  if(fields.isEmpty() && end) return null;
   	  // Otherwise, return the Array with the values of the row
@@ -125,7 +125,7 @@ public class GeneralReader {
         // Loop through the header and try to match each element to specified parameters
         for(int i = 0; i < header.length; i++) {
             for(int j = 0; j < parameters.length; j++) {
-                if(header[i].equals(parameters[j])) {
+                if(header[i].trim().equals(parameters[j])) {
                     indexes[j] = i;
                 }
             }
@@ -154,8 +154,8 @@ public class GeneralReader {
 		Pattern pattern = Pattern.compile(argument);
 		
 		// If pattern matches, validate the Zip and return
-		if(pattern.matcher(zip).find()) {
-			validatedZip = zip;
+		if(pattern.matcher(zip.trim()).find()) {
+			validatedZip = zip.trim();
 		}
 		
 		return validatedZip;
@@ -174,8 +174,8 @@ public class GeneralReader {
 		Pattern pattern = Pattern.compile(argument);
 		
 		// If pattern matches, validate integer and return
-		if(pattern.matcher(number).find()) {
-			validatedInteger = Integer.parseInt(number);
+		if(pattern.matcher(number.trim()).find()) {
+			validatedInteger = Integer.parseInt(number.trim());
 		}
 		
 		return validatedInteger;
@@ -194,8 +194,8 @@ public class GeneralReader {
 		Pattern pattern = Pattern.compile(argument);
 		
 		// If pattern matches, validate float and return
-		if(pattern.matcher(number).find()) {
-			validatedFloat = Float.parseFloat(number);
+		if(pattern.matcher(number.trim()).find()) {
+			validatedFloat = Float.parseFloat(number.trim());
 		}
 		
 		return validatedFloat;
@@ -213,9 +213,9 @@ public class GeneralReader {
 		Pattern pattern = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}$");
 		
 		// If the pattern matches, split the string and grab just the YYYY:MM:DD information for the new string
-		if(pattern.matcher(date).find()) {
-			String[] splitDate = date.split("\\s+", 2);
-			validatedDate = splitDate[0];
+		if(pattern.matcher(date.trim()).find()) {
+			String[] splitDate = date.trim().split("\\s+", 2);
+			validatedDate = splitDate[0].trim();
 		}
 		
 		return validatedDate;
