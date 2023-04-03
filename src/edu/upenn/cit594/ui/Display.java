@@ -10,10 +10,10 @@ public class Display {
     Scanner scanner = new Scanner(System.in);
     private Processor analyzer;
     private boolean activeUser = true;
-
     public Display(Processor analyzer) {
         this.analyzer = analyzer;
     }
+
     public void menuOptions() {
         System.out.println("Please choose from the list of options: \n0: Exit the program \n1: Show available options " +
                 "\n2: Show total population for all ZIP codes " +
@@ -22,83 +22,74 @@ public class Display {
                 "\n5: Show the average total livable area for properties in a specified ZIP code" +
                 "\n6: Show the total market value of properties, per capita, for a specified ZIP code" +
                 "\n7: This is a placeholder for our custom feature");
-
-        arrowPrinter();
     }
+
     Logger log = Logger.getInstance();
 
     public void displayData() {
-
-        while(activeUser) {
+        while (activeUser) {
             menuOptions();
-            int firstInput = scanner.nextInt();
-            while (firstInput < 0 || firstInput > 7) {
-                System.out.println("Please input a number between 0 and 7.");
-                arrowPrinter();
-                firstInput = scanner.nextInt();
+            arrowPrinter();
+            int firstInput;
+            try {
+                String s = scanner.next();
+                firstInput = Integer.parseInt(s);
+            }catch (NumberFormatException e){
+                System.out.println("Please enter a number between 0 and 7.");
+                continue;
+            }
+            if(firstInput < 0 || firstInput > 7) {
+                System.out.println("Please enter a number between 0 and 7.");
+                continue;
             }
             switch (firstInput) {
                 case 0:
                     activeUser = false;
                     System.out.println("Thank you for using our program.");
-                    return;
+                    break;
                 case 1:
                     System.out.println("BEGIN OUTPUT");
+                    // alternativeMenu();
                     System.out.println("END OUTPUT");
-                    displayData();
-                    return;
+                    break;
                 case 2:
-                    System.out.println(analyzer.getTotalPopulation());
-                    displayData();
-                    return;
+                    printTotalPopulation();
+                    break;
                 case 3:
                     seeTotalVaccinationsPerCapita();
-                    displayData();
-                    return;
+                    break;
                 case 4:
-                    System.out.println("Please specify the ZIP code you would like to see the average property value");
-                    String zipCode = scanner.next();
-                    arrowPrinter();
-                    System.out.println(analyzer.getAveragePropertyValue(zipCode));
-                    displayData();
-                    return;
+                    printAveragePropertyValue();
+                    break;
                 case 5:
-                    System.out.println("Please specify the ZIP code you would like to see average livable area");
-                    String zip = scanner.next();
-                    arrowPrinter();
-                    System.out.println(analyzer.getAverageTotalLivableArea(zip));
-                    displayData();
-                    return;
+                    printAverageLivableArea();
+                    break;
                 case 6:
-                    System.out.println("Please specify the ZIP code you would like to see total market value per capita");
-                    String nextZip = scanner.next();
-                    arrowPrinter();
-                    System.out.println(analyzer.getTotalMarketValuePerCapita(nextZip));
-                    displayData();
-                    return;
+                    printTotalMarketValuePerCapita();
+                    break;
                 case 7:
                     System.out.println("This will be our custom feature");
-                    return;
+                    break;
             }
-            scanner.close();
         }
+        scanner.close();
     }
+
     public void arrowPrinter() {
         System.out.flush();
         System.out.print("> ");
     }
-    public boolean validateUserInput(Object input) {
-        if(input.getClass() == String.class) {
-            if(((String) input).matches("^\\d{4}-\\d{2}-\\d{2}$")) return true;
-        }
-       return false;
+
+    public boolean validateDateInfo(String date) {
+            if (date.matches("^\\d{4}-\\d{2}-\\d{2}$")) return true;
+            return false;
     }
 
     public void seeTotalVaccinationsPerCapita() {
         System.out.println("partial or full");
         arrowPrinter();
         String next = scanner.next().toLowerCase(Locale.ROOT);
-        while(!next.equals("partial") && !next.equals("full")) {
+        while (!next.equals("partial") && !next.equals("full")) {
             System.out.println("Please enter either partial or full.");
             arrowPrinter();
             next = scanner.next();
@@ -106,16 +97,54 @@ public class Display {
         System.out.println("Please enter the date in YYYY-MM-DD format");
         arrowPrinter();
         String date = scanner.next();
-        while (!validateUserInput(date)) {
+        while (!validateDateInfo(date)) {
             System.out.println("Please try again: (format YYYY-MM-DD)");
             arrowPrinter();
             date = scanner.next();
         }
         TreeMap<Integer, Double> map = analyzer.getVaccinationsPerCapita(next, date);
-        System.out.println("BEGIN OUTPUT");
-        for (int i : map.keySet()) {
-            System.out.println(i + " " + map.get(i));
-        }
-        System.out.println("END OUTPUT");
+        if (map != null) {
+            System.out.println("BEGIN OUTPUT");
+            if(map.isEmpty()) System.out.println("0");
+          else {
+              for (int i : map.keySet()) {
+                    System.out.println(i + " " + map.get(i));
+                }
+            }
+            System.out.println("END OUTPUT");
+
         }
     }
+    public void alternativeMenu() {
+
+    }
+    public void printAveragePropertyValue() {
+        System.out.println("Please specify the ZIP code you would like to see the average property value");
+        arrowPrinter();
+        String zipCode = scanner.next();
+        System.out.println("BEGIN OUTPUT");
+        System.out.println(analyzer.getAveragePropertyValue(zipCode));
+        System.out.println("END OUTPUT");
+    }
+    public void printAverageLivableArea() {
+        System.out.println("Please specify the ZIP code you would like to see average livable area");
+        arrowPrinter();
+        String zip = scanner.next();
+        System.out.println("BEGIN OUTPUT");
+        System.out.println(analyzer.getAverageTotalLivableArea(zip));
+        System.out.println("END OUTPUT");
+    }
+    public void printTotalMarketValuePerCapita() {
+        System.out.println("Please specify the ZIP code you would like to see total market value per capita");
+        arrowPrinter();
+        String nextZip = scanner.next();
+        System.out.println("BEGIN OUTPUT");
+        System.out.println(analyzer.getTotalMarketValuePerCapita(nextZip));
+        System.out.println("END OUTPUT");
+    }
+    public void printTotalPopulation() {
+        System.out.println("BEGIN OUTPUT");
+        System.out.println(analyzer.getTotalPopulation());
+        System.out.println("END OUTPUT");
+    }
+}
