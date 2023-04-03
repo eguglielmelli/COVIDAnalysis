@@ -2,9 +2,7 @@ package edu.upenn.cit594.ui;
 import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.processor.Processor;
 
-import java.util.Locale;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Display {
     Scanner scanner = new Scanner(System.in);
@@ -24,7 +22,7 @@ public class Display {
                 "\n7: This is a placeholder for our custom feature");
     }
 
-    Logger log = Logger.getInstance();
+   // Logger log = Logger.getInstance();
 
     public void displayData() {
         while (activeUser) {
@@ -48,9 +46,7 @@ public class Display {
                     System.out.println("Thank you for using our program.");
                     break;
                 case 1:
-                    System.out.println("BEGIN OUTPUT");
-                    // alternativeMenu();
-                    System.out.println("END OUTPUT");
+                    availableActionsMenu();
                     break;
                 case 2:
                     printTotalPopulation();
@@ -74,15 +70,14 @@ public class Display {
         }
         scanner.close();
     }
-
     public void arrowPrinter() {
         System.out.flush();
         System.out.print("> ");
     }
 
     public boolean validateDateInfo(String date) {
-            if (date.matches("^\\d{4}-\\d{2}-\\d{2}$")) return true;
-            return false;
+        if(date.matches("^\\d{4}-\\d{2}-\\d{2}$")) return true;
+        return false;
     }
 
     public void seeTotalVaccinationsPerCapita() {
@@ -102,21 +97,70 @@ public class Display {
             arrowPrinter();
             date = scanner.next();
         }
+        if(date.compareTo("2022-07-25") > 0) {
+            System.out.println("BEGIN OUTPUT");
+            System.out.println("0");
+            System.out.println("END OUTPUT");
+            return;
+        }
         TreeMap<Integer, Double> map = analyzer.getVaccinationsPerCapita(next, date);
         if (map != null) {
             System.out.println("BEGIN OUTPUT");
-            if(map.isEmpty()) System.out.println("0");
-          else {
               for (int i : map.keySet()) {
                     System.out.println(i + " " + map.get(i));
                 }
-            }
             System.out.println("END OUTPUT");
 
         }
     }
-    public void alternativeMenu() {
-
+    public void availableActionsMenu() {
+        List<Integer> list = analyzer.getAvailableActions();
+        System.out.println("BEGIN OUTPUT");
+        for(int i : list) {
+            System.out.println(i);
+        }
+        System.out.println("END OUTPUT");
+        System.out.println("Please selection one of the available options: ");
+        int input;
+        while(true) {
+            try {
+                arrowPrinter();
+                String s = scanner.next();
+                input = Integer.parseInt(s);
+            }catch (NumberFormatException e){
+                System.out.println("Please enter a number between 0 and 7.");
+                continue;
+            }
+            if(input < 0 || input > 7) {
+                System.out.println("Please enter a number between 0 and 7.");
+                continue;
+            }
+            break;
+        }
+        switch(input) {
+            case 0:
+                activeUser = false;
+                System.out.println("Thank you for using our program.");
+                break;
+            case 1:
+                availableActionsMenu();
+                break;
+            case 2:
+                printTotalPopulation();
+                break;
+            case 3:
+                seeTotalVaccinationsPerCapita();
+                break;
+            case 4:
+                printAveragePropertyValue();
+                break;
+            case 5:
+                printAverageLivableArea();
+                break;
+            case 6:
+                printTotalMarketValuePerCapita();
+                break;
+        }
     }
     public void printAveragePropertyValue() {
         System.out.println("Please specify the ZIP code you would like to see the average property value");
