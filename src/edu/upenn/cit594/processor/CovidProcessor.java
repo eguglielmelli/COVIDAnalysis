@@ -33,18 +33,28 @@ public class CovidProcessor {
 
         	if(population == -1 || cases == null) {continue;}
 
-        	int totalVaccinated = 0;
-        	if(choice.equals("full")) {totalVaccinated = cases.getFullyVaccinated();}
-        	else if (choice.equals("partial")) {totalVaccinated = cases.getPartiallyVaccinated();}
+        	int vaccinated = 0;
+        	if(choice.equals("full")) {vaccinated = cases.getFullyVaccinated();}
+        	else if (choice.equals("partial")) {vaccinated = cases.getPartiallyVaccinated();}
 
-        	if(totalVaccinated == 0) {continue;}
+        	if(vaccinated == 0) {continue;}
 
-        	double perCapita = (double) totalVaccinated/population;
+        	double perCapita = (double) vaccinated/population;
             vaccinations.put(zip, Double.parseDouble(rounder.format(perCapita)));
           }
 		memoTable.put(key,vaccinations);
 		return vaccinations;
     }
+
+	public double vaccinationIncrease(String startDate,String endDate,String zipCode) {
+		if(data.get(zipCode).getCovidCasesForDate(startDate) != null && data.get(zipCode).getCovidCasesForDate(endDate) != null) {
+			double fullyVaccinatedStart = data.get(zipCode).getCovidCasesForDate(startDate).getFullyVaccinated();
+			double fullyVaccinatedEnd = data.get(zipCode).getCovidCasesForDate(endDate).getFullyVaccinated();
+			if(fullyVaccinatedStart == 0 || fullyVaccinatedEnd == 0) return 0;
+			return ((fullyVaccinatedEnd-fullyVaccinatedStart)/fullyVaccinatedStart)*100;
+		}
+		return 0;
+	}
 	
 
 }
