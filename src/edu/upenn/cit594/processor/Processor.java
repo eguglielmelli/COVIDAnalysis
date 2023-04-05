@@ -1,10 +1,8 @@
 package edu.upenn.cit594.processor;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.TreeMap;
+import java.text.DecimalFormat;
+import java.util.*;
 
 import edu.upenn.cit594.datamanagement.Reader;
 import edu.upenn.cit594.util.Zip;
@@ -15,12 +13,14 @@ public class Processor {
     PopulationProcessor populationProcessor;
     CovidProcessor covidProcessor;
     PropertyProcessor propertyProcessor;
+    TreeMap<String,Zip> data = null;
+    HashMap<String,TreeMap<String, HashMap<Integer,Double>>> memoTable = new HashMap<>();
 
     public Processor(Reader reader) throws Exception {
         availableActions = new ArrayList<>();
         availableActions.add(0);
         availableActions.add(1);
-        TreeMap<String, Zip> data = reader.getData();
+        data = reader.getData();
         boolean[] readFiles = reader.getReadFiles();
         if(readFiles[1]) {
             populationProcessor = new PopulationProcessor(data);
@@ -42,6 +42,9 @@ public class Processor {
         if(readFiles[1] && readFiles[3]) {
             availableActions.add(6);
         }
+        if(readFiles[1] && readFiles[2] && readFiles[3]) {
+            availableActions.add(7);
+        }
         Collections.sort(availableActions);
     }
 
@@ -59,5 +62,25 @@ public class Processor {
     public int getAverageTotalLivableArea(String zipCode) {return propertyProcessor.averageTotalLivableArea(zipCode);}
     
     public int getTotalMarketValuePerCapita(String zipCode) {return propertyProcessor.totalMarketValuePerCapita(zipCode);}
+
+    public TreeMap<String, HashMap<Integer,Double>> getVaccinationIncreaseForDate(String startDate, String endDate) {
+        DecimalFormat rounder = new DecimalFormat("#.00");
+        String key = startDate + "-" + endDate;
+        if(memoTable.containsKey(key)) return memoTable.get(key);
+        TreeMap<String,HashMap<Integer,Double>>marketValueVaxxIncrease = new TreeMap<>();
+        for(String zip : data.keySet()) {
+            HashMap<Integer,Double> map = new HashMap<>();
+            if(data.get(zip).getCovidCases() != null) {
+                double increaseVaccinated = covidProcessor.vaccinationIncrease(startDate, endDate, zip);
+                int marketValuePerCapita = propertyProcessor.totalMarketValuePerCapita(zip);
+                if(marketValuePerCapita != 0 && increaseVaccinated > 0) {
+                    map.put(marketValuePerCapita,Double.parseDouble(rounder.format(increaseVaccinated)));
+                    marketValueVaxxIncrease.put(zip, map);
+                }
+            }
+        }
+        memoTable.put(key,marketValueVaxxIncrease);
+        return marketValueVaxxIncrease;
+    }
    
 }
