@@ -1,22 +1,27 @@
 package edu.upenn.cit594.ui;
 import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.processor.Processor;
-
 import java.util.*;
 
 
 public class Display {
+    //create scanner to be used in many different methods
     Scanner scanner = new Scanner(System.in);
+    //we will pass the processor in order to make call the computation methods
     private Processor analyzer;
+
+    //boolean that denotes the user is still actively using the program
     private boolean activeUser = true;
+
     public Display(Processor analyzer) {
         this.analyzer = analyzer;
     }
 
+    //display menu that will be shown to the user
     public void menuOptions() {
         System.out.println("Please choose from the list of options: \n0: Exit the program \n1: Show available options " +
                 "\n2: Show total population for all ZIP codes " +
-                "\n3: Show the total vaccinations per capita for each ZIP code for the specified date" +
+                "\n3: Show the total vaccinations per capita (either partial or full) for each ZIP code for the specified date" +
                 "\n4: Show the average market value for properties in a specified ZIP code" +
                 "\n5: Show the average total livable area for properties in a specified ZIP code" +
                 "\n6: Show the total market value of properties, per capita, for a specified ZIP code" +
@@ -25,13 +30,21 @@ public class Display {
         arrowPrinter();
     }
 
+    /**
+     * The display method for our program that will be called by main and continuously takes input
+     * until the user enters "0"
+     * @throws Exception
+     */
     public void displayData() throws Exception {
+
         Logger log = Logger.getInstance();
         menuOptions();
         while (activeUser) {
+            //try to parse first input as int, if not then re-prompt
             int firstInput;
             try {
                 String s = scanner.next();
+                //log our input each time the user types something
                 log.writeToLog(System.currentTimeMillis() + " " + s);
                 firstInput = Integer.parseInt(s);
             }catch (NumberFormatException e){
@@ -53,6 +66,7 @@ public class Display {
                     availableActionsMenu(log);
                     break;
                 case 2:
+                    //for each input, we will check if its the list, if not immediate reprompt
                     if(!availableActionCheck(firstInput)) {
                         System.out.println("Action not available. Please choose another.");
                         menuOptions();
@@ -108,33 +122,43 @@ public class Display {
         System.out.flush();
         System.out.print("> ");
     }
-
+    //quick check to match the date format (YYYY-MM-DD) given in the files
     public boolean validateDateInfo(String date) {
         if(date.matches("^\\d{4}-\\d{2}-\\d{2}$")) return true;
         return false;
     }
 
+    /**
+     * This method takes the inputs and processes the vaccinations per capita
+     * an empty map denotes either dates are out of range or there is no data
+     * @param log logger to log user input
+     */
     public void seeTotalVaccinationsPerCapita(Logger log) {
+
         System.out.println("partial or full");
         arrowPrinter();
         String next = scanner.next().toLowerCase(Locale.ROOT);
         log.writeToLog(System.currentTimeMillis() + " " + next);
+
         while (!next.equals("partial") && !next.equals("full")) {
             System.out.println("Please enter either partial or full.");
             arrowPrinter();
             next = scanner.next();
             log.writeToLog(System.currentTimeMillis() + " " + next);
         }
+
         System.out.println("Please enter the date in YYYY-MM-DD format");
         arrowPrinter();
         String date = scanner.next();
         log.writeToLog(System.currentTimeMillis() + " " + date);
+
         while (!validateDateInfo(date)) {
             System.out.println("Please try again: (format YYYY-MM-DD)");
             arrowPrinter();
             date = scanner.next();
             log.writeToLog(System.currentTimeMillis() + " " + date);
         }
+
         TreeMap<Integer, Double> map = analyzer.getVaccinationsPerCapita(next, date);
         if(map.isEmpty()) {
             System.out.println("BEGIN OUTPUT");
@@ -143,6 +167,7 @@ public class Display {
             menuOptions();
             return;
         }
+
         System.out.println("BEGIN OUTPUT");
         for (int i : map.keySet()) {
             System.out.println(i + " " + map.get(i));
@@ -150,13 +175,21 @@ public class Display {
         System.out.println("END OUTPUT");
         menuOptions();
     }
+
+    /**
+     * Helper method represents the "available actions" menu
+     * will reprompt user to main menu if an unavailable action is inputted
+     * @param log logger to log user input
+     */
     public void availableActionsMenu(Logger log) {
+
         List<Integer> list = analyzer.getAvailableActions();
         System.out.println("BEGIN OUTPUT");
         for(int i : list) {
             System.out.println(i);
         }
         System.out.println("END OUTPUT");
+
         System.out.println("Please selection one of the available options: ");
         int input;
         while(true) {
@@ -175,6 +208,7 @@ public class Display {
             }
             break;
         }
+
         switch(input) {
             case 0:
                 activeUser = false;
@@ -184,6 +218,7 @@ public class Display {
                 availableActionsMenu(log);
                 break;
             case 2:
+                //for each input, we will check if its the list, if not immediate reprompt
                 if(!availableActionCheck(input)) {
                     System.out.println("Action not available. Please choose another.");
                     menuOptions();
@@ -233,82 +268,120 @@ public class Display {
                 break;
         }
     }
+
+    /**
+     * prints the average property value of the zip code given
+     * @param log logger to log user input
+     */
     public void printAveragePropertyValue(Logger log) {
+
         System.out.println("Please specify the 5 digit ZIP code for which you would like to see the average property value");
         arrowPrinter();
         String zipCode = scanner.next();
         log.writeToLog(System.currentTimeMillis() + " " + zipCode);
+        //we're looking for 5 digit pattern, otherwise user will be repompted
         while(!zipCode.matches("^\\d{5}$")) {
             System.out.println("Please enter a 5 digit ZIP code");
             arrowPrinter();
             zipCode = scanner.next();
             log.writeToLog(System.currentTimeMillis() + " " + zipCode);
         }
+
         System.out.println("BEGIN OUTPUT");
         System.out.println(analyzer.getAveragePropertyValue(zipCode));
         System.out.println("END OUTPUT");
         menuOptions();
     }
+
+    /**
+     * Prints the average livable area for the zip code given
+     * @param log logger to log inputs
+     */
     public void printAverageLivableArea(Logger log) {
+
         System.out.println("Please specify the 5 digit ZIP code for which you would like to see average livable area");
         arrowPrinter();
         String zip = scanner.next();
         log.writeToLog(System.currentTimeMillis() + " " + zip);
+        //looking for 5 digit pattern
         while(!zip.matches("^\\d{5}$")) {
             System.out.println("Please enter a 5 digit ZIP code");
             arrowPrinter();
             zip = scanner.next();
             log.writeToLog(System.currentTimeMillis() + " " + zip);
         }
+
         System.out.println("BEGIN OUTPUT");
         System.out.println(analyzer.getAverageTotalLivableArea(zip));
         System.out.println("END OUTPUT");
         menuOptions();
     }
+
+    /**
+     * Prints the total market value per capita of a given zip code
+     * @param log logger to log inputs
+     */
     public void printTotalMarketValuePerCapita(Logger log) {
+
         System.out.println("Please specify the 5 digit ZIP code for which you would like to see total market value per capita");
         arrowPrinter();
         String nextZip = scanner.next();
         log.writeToLog(System.currentTimeMillis() + " " + nextZip);
+        //also looking for 5 digit pattern
         while(!nextZip.matches("^\\d{5}$")) {
             System.out.println("Please enter a 5 digit ZIP code");
             arrowPrinter();
             nextZip = scanner.next();
             log.writeToLog(System.currentTimeMillis() + " " + nextZip);
         }
+
         System.out.println("BEGIN OUTPUT");
         System.out.println(analyzer.getTotalMarketValuePerCapita(nextZip));
         System.out.println("END OUTPUT");
         menuOptions();
     }
+    //prints the total population of all zip codes
     public void printTotalPopulation() {
         System.out.println("BEGIN OUTPUT");
         System.out.println(analyzer.getTotalPopulation());
         System.out.println("END OUTPUT");
         menuOptions();
     }
+    //keeps track of the actions that are available to the user
     public boolean availableActionCheck(int input) {
         if(!analyzer.getAvailableActions().contains(input)) return false;
         return true;
     }
+
+    /**
+     * custom feature that shows each zips percentage increase in full vaccinations over two given dates
+     * and also displays the market value per capita in each respective zip code
+     * @param log logger to log user input
+     */
     public void increaseInFullVaccinations(Logger log) {
+
         System.out.println("Please enter the start date in YYYY-MM-DD format");
         String startDate = scanner.next();
         log.writeToLog(System.currentTimeMillis() + " " + startDate);
+
         while(!validateDateInfo(startDate)) {
             System.out.println("Please try again: (format YYYY-MM-DD)");
             startDate = scanner.next();
             log.writeToLog(System.currentTimeMillis() + " " + startDate);
         }
+
         System.out.println("Please enter the end date in YYYY-MM-DD format");
         String endDate = scanner.next();
         log.writeToLog(System.currentTimeMillis() + " " + endDate);
+
         while(!validateDateInfo(startDate)) {
             System.out.println("Please try again: (format YYYY-MM-DD)");
             endDate = scanner.next();
             log.writeToLog(System.currentTimeMillis() + " " + endDate);
         }
+        //call our analyzer method to get access to the treemap for printing
         TreeMap<String,HashMap<Integer,Double>> map = analyzer.getVaccinationIncreaseForDate(startDate,endDate);
+        //an empty map denotes either invalid dates or no data is available for one or both of the dates
         if(map.isEmpty()) {
             System.out.println("BEGIN OUTPUT");
             System.out.println("0");
