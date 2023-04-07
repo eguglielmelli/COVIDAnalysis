@@ -17,7 +17,7 @@ public class PropertyProcessor {
     	this.data = data;
 	}
 
-	private int calculateAvgVal(String zipCode,PropertyComparator comparator) {
+	protected int calculateAvgVal(String zipCode,PropertyComparator comparator) {
 		if(!data.containsKey(zipCode)) return 0;
 		Zip instance = data.get(zipCode);
 		float sum = 0;
