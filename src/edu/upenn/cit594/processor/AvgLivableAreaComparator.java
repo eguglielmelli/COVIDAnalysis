@@ -6,7 +6,8 @@ import java.util.List;
 
 public class AvgLivableAreaComparator implements PropertyComparator {
 
-    public List<Float> getList(Zip zip) {
+    @Override
+	public List<Float> getList(Zip zip) {
         return zip.getTotalArea();
     }
 }

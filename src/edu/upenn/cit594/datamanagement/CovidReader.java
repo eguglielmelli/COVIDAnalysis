@@ -8,6 +8,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.util.Covid;
 import edu.upenn.cit594.util.Zip;
 
@@ -56,6 +57,8 @@ public class CovidReader extends GeneralReader {
 		try {
 			// Open the file for reading using JSON parser
 			JSONArray jsonArray = (JSONArray) new JSONParser().parse(new FileReader(filename));
+        	Logger logger = Logger.getInstance();
+        	logger.writeToLog(filename);
 			
 			// Loop through each object, extract relevant information to Java objects
 			for(Object obj : jsonArray) {
@@ -93,7 +96,6 @@ public class CovidReader extends GeneralReader {
 						
 	    // Generalize all error messages to a human readable error pinpointing where the issue is
         } catch (Exception e) {
-        	e.printStackTrace();
 			throw new Exception("Error reading Covid Json file. Program exiting...");
 		}
 	}
@@ -108,6 +110,8 @@ public class CovidReader extends GeneralReader {
 		try {
 			// Try to create a reader with the given filename
         	reader = new BufferedReader(new FileReader(filename));
+        	Logger logger = Logger.getInstance();
+        	logger.writeToLog(filename);
         	// Get the header (first row) and determine the indexes we need using the helper function
         	String[] header = readRow();
         	String[] arguments = {"zip_code", "etl_timestamp", "partially_vaccinated", "fully_vaccinated"};
@@ -136,11 +140,9 @@ public class CovidReader extends GeneralReader {
         		addCovidToData(zip, date, partiallyVaccinated, fullyVaccinated, data);
         		
         	}
-        	
+			reader.close();
 		} catch (Exception e) {
 			throw new Exception("Error reading Covid Csv file. Program exiting...");
-		} finally {
-			reader.close();
 		}
 	}
 	

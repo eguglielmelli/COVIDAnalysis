@@ -23,8 +23,36 @@ public class Reader {
 	// Constructor: decides which inputs were provided and calls the appropriate readers
 	public Reader(String[] inputs) throws Exception {
 		this.inputs = inputs;
+		readFiles();
 	}
 
+	/**
+	 * Method to create the readers and populate the data structure with the information from the files
+	 * @throws Exception if any error occurs when creating the files
+	 */
+	private void readFiles() throws Exception {
+		// Check there are inputs to be read and throw an error if there are not
+		if (inputs == null) {
+			throw new Exception("Reader has not been initialized. Program exiting...");
+		}
+		// Find and validate the arguments passed to the reader
+		setInputs();
+		// Create the logger and log the inputs
+		Logger logger = Logger.getInstance();
+		if(readFiles[0]) {
+			logger.setDestination(logFilename);
+		}
+		String log = "";
+		for (String input : inputs) {
+			log += input + " ";
+		}
+		logger.writeToLog(log);
+		// Create readers if the corresponding argument has been passed
+        if(readFiles[1]) {new PopulationReader(populationFilename, data);}
+        if(readFiles[2]) {new CovidReader(covidFilename, data);}
+        if(readFiles[3]) {new PropertyReader(propertyFilename, data);}
+	}
+	
 	/**
 	 * This method decides which files were provided and sets the appropriate filename and boolean value in the array
 	 * @param inputs (String []) : array of strings with the provided arguments
@@ -69,25 +97,15 @@ public class Reader {
 	/**
 	 * Method to return data to the upper tier to be processed
 	 * @return data (TreeMap<String, Zip>) : Map with all the Zip classes and the relevant information from files
-	 * @throws Exception if any error occurs when reading the files
 	 */
-	public TreeMap<String, Zip> getData() throws Exception {
-		if (inputs == null) {
-			throw new Exception("Reader has not been initialized. Program exiting...");
-		}
-		if (data.isEmpty()) {
-			setInputs();
-			if(readFiles[0]) {Logger.setDestination(logFilename);}
-	        if(readFiles[1]) {new PopulationReader(populationFilename, data);}
-	        if(readFiles[2]) {new CovidReader(covidFilename, data);}
-	        if(readFiles[3]) {new PropertyReader(propertyFilename, data);}
-		}
+	public TreeMap<String, Zip> getData() {
 		return data;
 		}
 	
-	// Getter method to return array of which files were read
-	public boolean[] getReadFiles() throws Exception {
-		// If data has not been populated, populate it
+	/**
+	 * Method to return read files to the upper tier to be processed
+	 * @return data (boolean[]) : boolean with which files were read
+	 */	public boolean[] getReadFiles() {
 		return readFiles;
 		}
 }

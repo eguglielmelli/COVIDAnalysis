@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.TreeMap;
 
+import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.util.Zip;
 
 /**
@@ -30,6 +31,8 @@ public class PopulationReader extends GeneralReader {
 		try {
 			// Try to create a reader with the given filename
         	reader = new BufferedReader(new FileReader(filename));
+        	Logger logger = Logger.getInstance();
+        	logger.writeToLog(filename);
         	// Get the header (first row) and determine the indexes we need using the helper function
         	String[] header = readRow();
         	String[] arguments = {"zip_code", "population"};
@@ -56,14 +59,11 @@ public class PopulationReader extends GeneralReader {
         		
         		// Update the information inside the data array
     			data.get(zip).setTotalPopulation(population);
-
         	}
+			reader.close();
         // Catch any exceptions and throw it as human readable error explaining where the issue is
 		} catch (Exception e) {
 			throw new Exception("Error reading population file. Program exiting...");
-		} finally {
-			reader.close();
-		}
-				
+		}		
 	}
 }

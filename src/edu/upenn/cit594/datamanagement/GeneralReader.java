@@ -1,8 +1,8 @@
 package edu.upenn.cit594.datamanagement;
 
 import java.io.BufferedReader;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -24,7 +24,7 @@ public class GeneralReader {
 	 */
     protected String[] readRow() throws Exception {
   	  // Initialize a list to store the fields of the row
-  	  List<String> fields = new ArrayList<>();
+  	  List<String> fields = new LinkedList<>();
   	  // Initialize a string builder to store the current field
   	  StringBuilder field = new StringBuilder();
   	  // Initialize a boolean flag to indicate if the field is escaped

@@ -5,7 +5,6 @@ import edu.upenn.cit594.util.Zip;
 import org.junit.jupiter.api.Test;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;

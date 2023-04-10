@@ -35,7 +35,7 @@ public class Display {
      * until the user enters "0"
      * @throws Exception
      */
-    public void displayData() throws Exception {
+    public void startProgram() throws Exception {
 
         Logger log = Logger.getInstance();
         menuOptions();
@@ -45,7 +45,7 @@ public class Display {
             try {
                 String s = scanner.next();
                 //log our input each time the user types something
-                log.writeToLog(System.currentTimeMillis() + " " + s);
+                log.writeToLog(s);
                 firstInput = Integer.parseInt(s);
             }catch (NumberFormatException e){
                 System.out.println("Please enter a number between 0 and 7.");
@@ -138,25 +138,25 @@ public class Display {
         System.out.println("partial or full");
         arrowPrinter();
         String next = scanner.next().toLowerCase(Locale.ROOT);
-        log.writeToLog(System.currentTimeMillis() + " " + next);
+        log.writeToLog(next);
 
         while (!next.equals("partial") && !next.equals("full")) {
             System.out.println("Please enter either partial or full.");
             arrowPrinter();
             next = scanner.next();
-            log.writeToLog(System.currentTimeMillis() + " " + next);
+            log.writeToLog(next);
         }
 
         System.out.println("Please enter the date in YYYY-MM-DD format");
         arrowPrinter();
         String date = scanner.next();
-        log.writeToLog(System.currentTimeMillis() + " " + date);
+        log.writeToLog(date);
 
         while (!validateDateInfo(date)) {
             System.out.println("Please try again: (format YYYY-MM-DD)");
             arrowPrinter();
             date = scanner.next();
-            log.writeToLog(System.currentTimeMillis() + " " + date);
+            log.writeToLog(date);
         }
 
         TreeMap<Integer, Double> map = analyzer.getVaccinationsPerCapita(next, date);
@@ -196,7 +196,7 @@ public class Display {
             try {
                 arrowPrinter();
                 String s = scanner.next();
-                log.writeToLog(System.currentTimeMillis() + " " + s);
+                log.writeToLog(s);
                 input = Integer.parseInt(s);
             }catch (NumberFormatException e){
                 System.out.println("Please enter a number between 0 and 7.");
@@ -278,13 +278,13 @@ public class Display {
         System.out.println("Please specify the 5 digit ZIP code for which you would like to see the average property value");
         arrowPrinter();
         String zipCode = scanner.next();
-        log.writeToLog(System.currentTimeMillis() + " " + zipCode);
+        log.writeToLog(zipCode);
         //we're looking for 5 digit pattern, otherwise user will be repompted
         while(!zipCode.matches("^\\d{5}$")) {
             System.out.println("Please enter a 5 digit ZIP code");
             arrowPrinter();
             zipCode = scanner.next();
-            log.writeToLog(System.currentTimeMillis() + " " + zipCode);
+            log.writeToLog(zipCode);
         }
 
         System.out.println("BEGIN OUTPUT");
@@ -302,13 +302,13 @@ public class Display {
         System.out.println("Please specify the 5 digit ZIP code for which you would like to see average livable area");
         arrowPrinter();
         String zip = scanner.next();
-        log.writeToLog(System.currentTimeMillis() + " " + zip);
+        log.writeToLog(zip);
         //looking for 5 digit pattern
         while(!zip.matches("^\\d{5}$")) {
             System.out.println("Please enter a 5 digit ZIP code");
             arrowPrinter();
             zip = scanner.next();
-            log.writeToLog(System.currentTimeMillis() + " " + zip);
+            log.writeToLog(zip);
         }
 
         System.out.println("BEGIN OUTPUT");
@@ -326,13 +326,13 @@ public class Display {
         System.out.println("Please specify the 5 digit ZIP code for which you would like to see total market value per capita");
         arrowPrinter();
         String nextZip = scanner.next();
-        log.writeToLog(System.currentTimeMillis() + " " + nextZip);
+        log.writeToLog(nextZip);
         //also looking for 5 digit pattern
         while(!nextZip.matches("^\\d{5}$")) {
             System.out.println("Please enter a 5 digit ZIP code");
             arrowPrinter();
             nextZip = scanner.next();
-            log.writeToLog(System.currentTimeMillis() + " " + nextZip);
+            log.writeToLog(nextZip);
         }
 
         System.out.println("BEGIN OUTPUT");
@@ -362,22 +362,22 @@ public class Display {
 
         System.out.println("Please enter the start date in YYYY-MM-DD format");
         String startDate = scanner.next();
-        log.writeToLog(System.currentTimeMillis() + " " + startDate);
+        log.writeToLog(startDate);
 
         while(!validateDateInfo(startDate)) {
             System.out.println("Please try again: (format YYYY-MM-DD)");
             startDate = scanner.next();
-            log.writeToLog(System.currentTimeMillis() + " " + startDate);
+            log.writeToLog(startDate);
         }
 
         System.out.println("Please enter the end date in YYYY-MM-DD format");
         String endDate = scanner.next();
-        log.writeToLog(System.currentTimeMillis() + " " + endDate);
+        log.writeToLog(endDate);
 
         while(!validateDateInfo(startDate)) {
             System.out.println("Please try again: (format YYYY-MM-DD)");
             endDate = scanner.next();
-            log.writeToLog(System.currentTimeMillis() + " " + endDate);
+            log.writeToLog(endDate);
         }
         //call our analyzer method to get access to the treemap for printing
         TreeMap<String,HashMap<Integer,Double>> map = analyzer.getVaccinationIncreaseForDate(startDate,endDate);

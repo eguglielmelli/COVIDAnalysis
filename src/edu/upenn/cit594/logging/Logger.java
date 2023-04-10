@@ -19,11 +19,9 @@ public class Logger {
 
     /**
      * Returns the instance of the Logger class
-     * @throws an exception if the logger has not been initialized
      * @return The instance of the Logger class
      */
     public static Logger getInstance() throws Exception {
-    	if(out == null) {throw new Exception ("Logger has not been initialized. Program exiting...");}
         return instance;
     }
 
@@ -32,7 +30,7 @@ public class Logger {
 	 * If an instance of the Logger class already exists, it is closed
 	 * @param filename The name of the new logger file
 	 */
-    public static void setDestination(String filename) throws Exception {
+    public void setDestination(String filename) throws Exception {
         if(out != null) {out.close();}
         try {
         	out = new PrintWriter(new FileWriter(filename, true));
@@ -47,9 +45,13 @@ public class Logger {
      * @return True if the message was successfully written to the logger file, false otherwise
      */
 	public boolean writeToLog (String message) {
-		if(out == null) {return false;}
-		out.println(message);
-		out.flush();
+		String logged = System.currentTimeMillis() + " " + message;
+		if(out == null) {
+			System.err.println(logged);
+		} else { 
+			out.println(logged);
+			out.flush();
+		}
 		return true;
 	}
 	

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.TreeMap;
 
+import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.util.Zip;
 
 /**
@@ -30,6 +31,8 @@ public class PropertyReader extends GeneralReader {
 		try {
 			// Try to create a reader with the given filename
         	reader = new BufferedReader(new FileReader(filename));
+        	Logger logger = Logger.getInstance();
+        	logger.writeToLog(filename);
         	// Get the header (first row) and determine the indexes we need using the helper function
         	String[] header = readRow();
         	String[] arguments = {"zip_code", "market_value", "total_livable_area"};
@@ -68,11 +71,10 @@ public class PropertyReader extends GeneralReader {
         			data.get(zip).setTotalArea(totalLivableArea);
         		}
         	}
+			reader.close();
         // Catch any exceptions and throw it as human readable error explaining where the issue is
 		} catch (Exception e) {
 			throw new Exception("Error reading property file. Program exiting...");
-		} finally {
-			reader.close();
 		}
 	}
 }

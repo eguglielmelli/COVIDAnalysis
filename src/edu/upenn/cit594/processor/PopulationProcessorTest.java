@@ -1,6 +1,5 @@
 package edu.upenn.cit594.processor;
 
-import edu.upenn.cit594.datamanagement.PopulationReader;
 import edu.upenn.cit594.datamanagement.Reader;
 import edu.upenn.cit594.util.Zip;
 import org.junit.jupiter.api.Test;
