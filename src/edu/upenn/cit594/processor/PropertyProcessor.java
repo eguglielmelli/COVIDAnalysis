@@ -60,7 +60,7 @@ public class PropertyProcessor {
 		float sum = 0;
 		int count = instance.getTotalPopulation();
 		if(!instance.getMarketValue().isEmpty()) {
-			for(Float number : instance.getTotalArea()) {
+			for(Float number : instance.getMarketValue()) {
 				sum += number;
 			}
 			return (int) sum/count;
