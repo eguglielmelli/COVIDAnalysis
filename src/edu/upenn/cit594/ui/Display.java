@@ -359,7 +359,12 @@ public class Display {
      * @param log logger to log user input
      */
     public void increaseInFullVaccinations(Logger log) {
-
+        System.out.println("This feature will immediately return 0 under any of the following conditions: \n1.) The end date occurs before the start date " +
+                "\n2.) The dates are either both before or after the range of our data (2021-03-25 - 2022-11-07)" +
+                "\n3.) The start date and the end date are the same" +
+                "\n4.) You put in an invalid date (ie 2022-13-40)" +
+                "\nIf a particular ZIP code has no data for the dates you give, we will retrieve the data from the closest dates");
+        System.out.println();
         System.out.println("Please enter the start date in YYYY-MM-DD format");
         String startDate = scanner.next();
         log.writeToLog(startDate);
@@ -374,7 +379,7 @@ public class Display {
         String endDate = scanner.next();
         log.writeToLog(endDate);
 
-        while(!validateDateInfo(startDate)) {
+        while(!validateDateInfo(endDate)) {
             System.out.println("Please try again: (format YYYY-MM-DD)");
             endDate = scanner.next();
             log.writeToLog(endDate);
@@ -393,7 +398,7 @@ public class Display {
             System.out.println("ZIP " + "\t" + "MVPC" + "\t" + "Percent Change");
             for (String i : map.keySet()) {
                 for (int j : map.get(i).keySet()) {
-                    System.out.println(i + "\t" + j + "\t" + "\t" + map.get(i).get(j) + "%");
+                    System.out.printf("%-7s %-6d %12s\n", i, j, map.get(i).get(j) + "%");
                 }
             }
             System.out.println("END OUTPUT");
