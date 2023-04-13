@@ -1,10 +1,8 @@
 package edu.upenn.cit594.processor;
-
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
 import edu.upenn.cit594.util.Covid;
 import edu.upenn.cit594.util.Zip;
 
@@ -18,7 +16,6 @@ public class CovidProcessor {
 	}
 
 
-    // Memoization may need a little more work, will revisit this one
 	public TreeMap<Integer,Double> vaccinationsPerCapita(String choice, String date) {
 		String key = choice + "-" + date;
 		if(memoTable.containsKey(key)) {
@@ -47,13 +44,10 @@ public class CovidProcessor {
     }
 
 	public double vaccinationIncrease(String startDate,String endDate,String zipCode) {
-		if(data.get(zipCode).getCovidCasesForDate(startDate) != null && data.get(zipCode).getCovidCasesForDate(endDate) != null) {
-			double fullyVaccinatedStart = data.get(zipCode).getCovidCasesForDate(startDate).getFullyVaccinated();
-			double fullyVaccinatedEnd = data.get(zipCode).getCovidCasesForDate(endDate).getFullyVaccinated();
-			if(fullyVaccinatedStart == 0 || fullyVaccinatedEnd == 0) return 0;
-			return ((fullyVaccinatedEnd-fullyVaccinatedStart)/fullyVaccinatedStart)*100;
-		}
-		return 0;
+		double fullyVaccinatedStart = data.get(zipCode).getCovidCasesForDate(startDate).getFullyVaccinated();
+		double fullyVaccinatedEnd = data.get(zipCode).getCovidCasesForDate(endDate).getFullyVaccinated();
+		if(fullyVaccinatedStart == 0 || fullyVaccinatedEnd == 0) return 0;
+		return ((fullyVaccinatedEnd-fullyVaccinatedStart)/fullyVaccinatedStart)*100;
 	}
 	
 

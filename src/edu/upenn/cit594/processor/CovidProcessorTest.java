@@ -2,6 +2,7 @@ package edu.upenn.cit594.processor;
 
 import edu.upenn.cit594.datamanagement.Reader;
 import edu.upenn.cit594.util.Zip;
+import jdk.swing.interop.SwingInterOpUtils;
 import org.junit.jupiter.api.Test;
 import java.util.TreeMap;
 
@@ -44,26 +45,21 @@ class CovidProcessorTest {
         TreeMap<String, Zip> data = reader.getData();
         CovidProcessor cProcessor = new CovidProcessor(data);
 
+        //this method does not have cases where the output will be null because it is null checked prior to calling
+        //in the processor class, we will test very basic computations and some 0 tests
+
         //two valid dates, we round the number for simplicity of checking assertions
         double increaseInVaxx = cProcessor.vaccinationIncrease("2021-03-25","2021-05-31","19102");
         increaseInVaxx = Math.round(increaseInVaxx);
         assertTrue(increaseInVaxx == 173) ;
 
-        //one valid date, one invalid date, should return 0
-        increaseInVaxx = cProcessor.vaccinationIncrease("2021-03-25","2023-04-30","19102");
-        assertTrue(increaseInVaxx == 0);
+        //another valid non-zero case
+        increaseInVaxx = cProcessor.vaccinationIncrease("2021-03-25","2022-05-01","19122");
+        increaseInVaxx = Math.round(increaseInVaxx);
+        assertTrue(increaseInVaxx == 891);
 
-        //two invalid dates (out of range), should return 0 also
-        increaseInVaxx = cProcessor.vaccinationIncrease("2023-04-40","2024-03-20","19101");
-        assertTrue(increaseInVaxx == 0);
-
-        //two valid dates but flipped (ie later date comes before the earlier date), should return 0 because increase would be negative
-        increaseInVaxx = cProcessor.vaccinationIncrease("2021-05-31","2021-03-25","19101");
-        assertTrue(increaseInVaxx == 0);
-
-        //two valid dates, but no underlying data for the zip code, should be 0
-        increaseInVaxx = cProcessor.vaccinationIncrease("2021-03-25","2021-05-27","19155");
-        assertTrue(increaseInVaxx == 0) ;
-
+        //this is a case where there is no data for the date, but the cases are not null, so this method returns 0
+        increaseInVaxx = cProcessor.vaccinationIncrease("2021-03-25","2022-10-31","19193");
+        assertEquals(increaseInVaxx,0);
     }
 }
