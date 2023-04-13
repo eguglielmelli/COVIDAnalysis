@@ -1,6 +1,8 @@
 package edu.upenn.cit594.ui;
 import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.processor.Processor;
+
+import java.sql.SQLOutput;
 import java.util.*;
 
 
@@ -33,6 +35,7 @@ public class Display {
     /**
      * The display method for our program that will be called by main and continuously takes input
      * until the user enters "0"
+     *
      * @throws Exception
      */
     public void startProgram() throws Exception {
@@ -47,12 +50,12 @@ public class Display {
                 //log our input each time the user types something
                 log.writeToLog(s);
                 firstInput = Integer.parseInt(s);
-            }catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.println("Please enter a number between 0 and 7.");
                 arrowPrinter();
                 continue;
             }
-            if(firstInput < 0 || firstInput > 7) {
+            if (firstInput < 0 || firstInput > 7) {
                 System.out.println("Please enter a number between 0 and 7.");
                 arrowPrinter();
                 continue;
@@ -67,7 +70,7 @@ public class Display {
                     break;
                 case 2:
                     //for each input, we will check if its the list, if not immediate reprompt
-                    if(!availableActionCheck(firstInput)) {
+                    if (!availableActionCheck(firstInput)) {
                         System.out.println("Action not available. Please choose another.");
                         menuOptions();
                         break;
@@ -75,7 +78,7 @@ public class Display {
                     printTotalPopulation();
                     break;
                 case 3:
-                    if(!availableActionCheck(firstInput)) {
+                    if (!availableActionCheck(firstInput)) {
                         System.out.println("Action not available. Please choose another.");
                         menuOptions();
                         break;
@@ -83,7 +86,7 @@ public class Display {
                     seeTotalVaccinationsPerCapita(log);
                     break;
                 case 4:
-                    if(!availableActionCheck(firstInput)) {
+                    if (!availableActionCheck(firstInput)) {
                         System.out.println("Action not available. Please choose another.");
                         menuOptions();
                         break;
@@ -91,7 +94,7 @@ public class Display {
                     printAveragePropertyValue(log);
                     break;
                 case 5:
-                    if(!availableActionCheck(firstInput)) {
+                    if (!availableActionCheck(firstInput)) {
                         System.out.println("Action not available. Please choose another.");
                         menuOptions();
                         break;
@@ -99,7 +102,7 @@ public class Display {
                     printAverageLivableArea(log);
                     break;
                 case 6:
-                    if(!availableActionCheck(firstInput)) {
+                    if (!availableActionCheck(firstInput)) {
                         System.out.println("Action not available. Please choose another.");
                         menuOptions();
                         break;
@@ -107,7 +110,7 @@ public class Display {
                     printTotalMarketValuePerCapita(log);
                     break;
                 case 7:
-                    if(!availableActionCheck(firstInput)) {
+                    if (!availableActionCheck(firstInput)) {
                         System.out.println("Action not available. Please choose another.");
                         menuOptions();
                         break;
@@ -118,19 +121,22 @@ public class Display {
         }
         scanner.close();
     }
+
     public void arrowPrinter() {
         System.out.flush();
         System.out.print("> ");
     }
+
     //quick check to match the date format (YYYY-MM-DD) given in the files
     public boolean validateDateInfo(String date) {
-        if(date.matches("^\\d{4}-\\d{2}-\\d{2}$")) return true;
+        if (date.matches("^\\d{4}-\\d{2}-\\d{2}$")) return true;
         return false;
     }
 
     /**
      * This method takes the inputs and processes the vaccinations per capita
      * an empty map denotes either dates are out of range or there is no data
+     *
      * @param log logger to log user input
      */
     public void seeTotalVaccinationsPerCapita(Logger log) {
@@ -160,7 +166,7 @@ public class Display {
         }
 
         TreeMap<Integer, Double> map = analyzer.getVaccinationsPerCapita(next, date);
-        if(map.isEmpty()) {
+        if (map.isEmpty()) {
             System.out.println("BEGIN OUTPUT");
             System.out.println("0");
             System.out.println("END OUTPUT");
@@ -179,37 +185,38 @@ public class Display {
     /**
      * Helper method represents the "available actions" menu
      * will reprompt user to main menu if an unavailable action is inputted
+     *
      * @param log logger to log user input
      */
     public void availableActionsMenu(Logger log) {
 
         List<Integer> list = analyzer.getAvailableActions();
         System.out.println("BEGIN OUTPUT");
-        for(int i : list) {
+        for (int i : list) {
             System.out.println(i);
         }
         System.out.println("END OUTPUT");
 
         System.out.println("Please selection one of the available options: ");
         int input;
-        while(true) {
+        while (true) {
             try {
                 arrowPrinter();
                 String s = scanner.next();
                 log.writeToLog(s);
                 input = Integer.parseInt(s);
-            }catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.println("Please enter a number between 0 and 7.");
                 continue;
             }
-            if(input < 0 || input > 7) {
+            if (input < 0 || input > 7) {
                 System.out.println("Please enter a number between 0 and 7.");
                 continue;
             }
             break;
         }
 
-        switch(input) {
+        switch (input) {
             case 0:
                 activeUser = false;
                 System.out.println("Thank you for using our program.");
@@ -219,7 +226,7 @@ public class Display {
                 break;
             case 2:
                 //for each input, we will check if its the list, if not immediate reprompt
-                if(!availableActionCheck(input)) {
+                if (!availableActionCheck(input)) {
                     System.out.println("Action not available. Please choose another.");
                     menuOptions();
                     break;
@@ -227,7 +234,7 @@ public class Display {
                 printTotalPopulation();
                 break;
             case 3:
-                if(!availableActionCheck(input)) {
+                if (!availableActionCheck(input)) {
                     System.out.println("Action not available. Please choose another.");
                     menuOptions();
                     break;
@@ -235,7 +242,7 @@ public class Display {
                 seeTotalVaccinationsPerCapita(log);
                 break;
             case 4:
-                if(!availableActionCheck(input)) {
+                if (!availableActionCheck(input)) {
                     System.out.println("Action not available. Please choose another.");
                     menuOptions();
                     break;
@@ -243,7 +250,7 @@ public class Display {
                 printAveragePropertyValue(log);
                 break;
             case 5:
-                if(!availableActionCheck(input)) {
+                if (!availableActionCheck(input)) {
                     System.out.println("Action not available. Please choose another.");
                     menuOptions();
                     break;
@@ -251,7 +258,7 @@ public class Display {
                 printAverageLivableArea(log);
                 break;
             case 6:
-                if(!availableActionCheck(input)) {
+                if (!availableActionCheck(input)) {
                     System.out.println("Action not available. Please choose another.");
                     menuOptions();
                     break;
@@ -259,7 +266,7 @@ public class Display {
                 printTotalMarketValuePerCapita(log);
                 break;
             case 7:
-                if(!availableActionCheck(input)) {
+                if (!availableActionCheck(input)) {
                     System.out.println("Action not available. Please choose another.");
                     menuOptions();
                     break;
@@ -271,6 +278,7 @@ public class Display {
 
     /**
      * prints the average property value of the zip code given
+     *
      * @param log logger to log user input
      */
     public void printAveragePropertyValue(Logger log) {
@@ -280,7 +288,7 @@ public class Display {
         String zipCode = scanner.next();
         log.writeToLog(zipCode);
         //we're looking for 5 digit pattern, otherwise user will be repompted
-        while(!zipCode.matches("^\\d{5}$")) {
+        while (!zipCode.matches("^\\d{5}$")) {
             System.out.println("Please enter a 5 digit ZIP code");
             arrowPrinter();
             zipCode = scanner.next();
@@ -295,6 +303,7 @@ public class Display {
 
     /**
      * Prints the average livable area for the zip code given
+     *
      * @param log logger to log inputs
      */
     public void printAverageLivableArea(Logger log) {
@@ -304,7 +313,7 @@ public class Display {
         String zip = scanner.next();
         log.writeToLog(zip);
         //looking for 5 digit pattern
-        while(!zip.matches("^\\d{5}$")) {
+        while (!zip.matches("^\\d{5}$")) {
             System.out.println("Please enter a 5 digit ZIP code");
             arrowPrinter();
             zip = scanner.next();
@@ -319,6 +328,7 @@ public class Display {
 
     /**
      * Prints the total market value per capita of a given zip code
+     *
      * @param log logger to log inputs
      */
     public void printTotalMarketValuePerCapita(Logger log) {
@@ -328,7 +338,7 @@ public class Display {
         String nextZip = scanner.next();
         log.writeToLog(nextZip);
         //also looking for 5 digit pattern
-        while(!nextZip.matches("^\\d{5}$")) {
+        while (!nextZip.matches("^\\d{5}$")) {
             System.out.println("Please enter a 5 digit ZIP code");
             arrowPrinter();
             nextZip = scanner.next();
@@ -340,6 +350,7 @@ public class Display {
         System.out.println("END OUTPUT");
         menuOptions();
     }
+
     //prints the total population of all zip codes
     public void printTotalPopulation() {
         System.out.println("BEGIN OUTPUT");
@@ -347,24 +358,31 @@ public class Display {
         System.out.println("END OUTPUT");
         menuOptions();
     }
+
     //keeps track of the actions that are available to the user
     public boolean availableActionCheck(int input) {
-        if(!analyzer.getAvailableActions().contains(input)) return false;
+        if (!analyzer.getAvailableActions().contains(input)) return false;
         return true;
     }
 
     /**
      * custom feature that shows each zips percentage increase in full vaccinations over two given dates
      * and also displays the market value per capita in each respective zip code
+     *
      * @param log logger to log user input
      */
     public void increaseInFullVaccinations(Logger log) {
-
+        System.out.println("This feature will immediately return 0 under any of the following conditions: \n1.) The end date occurs before the start date " +
+                "\n2.) The dates are either both before or after the range of our data (2021-03-25 - 2022-11-07)" +
+                "\n3.) The start date and the end date are the same" +
+                "\n4.) You put in an invalid date (ie 2022-13-40)" +
+                "\nIf a particular ZIP code has no data for the dates you give, we will retrieve the data from the closest dates");
+        System.out.println();
         System.out.println("Please enter the start date in YYYY-MM-DD format");
         String startDate = scanner.next();
         log.writeToLog(startDate);
 
-        while(!validateDateInfo(startDate)) {
+        while (!validateDateInfo(startDate)) {
             System.out.println("Please try again: (format YYYY-MM-DD)");
             startDate = scanner.next();
             log.writeToLog(startDate);
@@ -374,30 +392,30 @@ public class Display {
         String endDate = scanner.next();
         log.writeToLog(endDate);
 
-        while(!validateDateInfo(startDate)) {
+        while (!validateDateInfo(endDate)) {
             System.out.println("Please try again: (format YYYY-MM-DD)");
             endDate = scanner.next();
             log.writeToLog(endDate);
         }
         //call our analyzer method to get access to the treemap for printing
-        TreeMap<String,HashMap<Integer,Double>> map = analyzer.getVaccinationIncreaseForDate(startDate,endDate);
+        TreeMap<String, HashMap<Integer, Double>> map = analyzer.getVaccinationIncreaseForDate(startDate, endDate);
         //an empty map denotes either invalid dates or no data is available for one or both of the dates
-        if(map.isEmpty()) {
+        if (map.isEmpty()) {
             System.out.println("BEGIN OUTPUT");
             System.out.println("0");
             System.out.println("END OUTPUT");
             menuOptions();
             return;
-        }else {
+        } else {
             System.out.println("BEGIN OUTPUT");
             System.out.println("ZIP " + "\t" + "MVPC" + "\t" + "Percent Change");
             for (String i : map.keySet()) {
                 for (int j : map.get(i).keySet()) {
-                    System.out.println(i + "\t" + j + "\t" + "\t" + map.get(i).get(j) + "%");
+                    System.out.printf("%-7s %-6d %12s\n", i, j, map.get(i).get(j) + "%");
                 }
             }
             System.out.println("END OUTPUT");
+            menuOptions();
         }
-        menuOptions();
     }
 }
