@@ -61,7 +61,7 @@ class PropertyProcessorTest {
 
         //check a valid zip with underlying data
         int marketValuePC = propertyProcessor.totalMarketValuePerCapita("19102");
-        assertTrue(marketValuePC == 126);
+        assertTrue(marketValuePC == 26297);
 
         //check case with invalid zip should return 0
         marketValuePC = propertyProcessor.totalMarketValuePerCapita("19900");

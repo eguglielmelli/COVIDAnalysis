@@ -1,9 +1,7 @@
 package edu.upenn.cit594.processor;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
-
 import edu.upenn.cit594.util.Zip;
 
 public class PropertyProcessor {
@@ -33,7 +31,6 @@ public class PropertyProcessor {
 		return 0;
 	}
 
-    // Strategy method implemented
 	public int averagePropertyValue(String zipCode) {
 		if(memoTablePropVal.containsKey(zipCode)) return memoTablePropVal.get(zipCode);
 		else {
@@ -43,8 +40,7 @@ public class PropertyProcessor {
 			return avgPropVal;
 		}
     }
-	
-    // Strategy pattern should be correct, will visit again if we need to make changes
+
     public int averageTotalLivableArea(String zipCode) {
 		if(memoTableLivableAreaVal.containsKey(zipCode)) return memoTableLivableAreaVal.get(zipCode);
 		else {
@@ -68,7 +64,6 @@ public class PropertyProcessor {
 		return 0;
 	}
 
-    // memoization should be done, will redo if need be
     public int totalMarketValuePerCapita(String zipCode) {
 		if(!data.containsKey(zipCode)) return 0;
 		if(marketValPerCap.containsKey(zipCode)) return marketValPerCap.get(zipCode);
@@ -78,5 +73,4 @@ public class PropertyProcessor {
 			return mvPerCapita;
 		}
     }
-
 }
