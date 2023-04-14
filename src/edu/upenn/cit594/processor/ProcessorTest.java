@@ -2,6 +2,8 @@ package edu.upenn.cit594.processor;
 import edu.upenn.cit594.datamanagement.Reader;
 import edu.upenn.cit594.util.Zip;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
@@ -123,24 +125,24 @@ class ProcessorTest {
         String endDate = "2022-02-13";
         String zipCode = "19147";
         String[] array = processor.findClosestDates(startDate, endDate, zipCode);
-        assertEquals("2021-03-25",array[0]);
-        assertEquals("2022-02-11",array[1]);
+        assertEquals("2021-03-25", array[0]);
+        assertEquals("2022-02-11", array[1]);
 
         //case where start date is null and end date is not null, start date should be adjusted to 3/25/2021
         startDate = "2020-01-10";
         endDate = "2021-03-27";
         zipCode = "19147";
         array = processor.findClosestDates(startDate, endDate, zipCode);
-        assertEquals("2021-03-25",array[0]);
-        assertEquals("2021-03-27",array[1]);
+        assertEquals("2021-03-25", array[0]);
+        assertEquals("2021-03-27", array[1]);
 
         //case where end date is null and needs to be moved up until valid, end date should be adjusted to 11/07/2022
         startDate = "2022-05-01";
         endDate = "2023-11-12";
         zipCode = "19147";
         array = processor.findClosestDates(startDate, endDate, zipCode);
-        assertEquals("2022-05-01",array[0]);
-        assertEquals("2022-11-07",array[1]);
+        assertEquals("2022-05-01", array[0]);
+        assertEquals("2022-11-07", array[1]);
 
         //both start and end are null, and difference is years (20 year span), start date should be 03/25/2021, end date 11/07/2022
         //this includes the entire data set
@@ -148,37 +150,85 @@ class ProcessorTest {
         endDate = "2030-12-10";
         zipCode = "19147";
         array = processor.findClosestDates(startDate, endDate, zipCode);
-        assertEquals("2021-03-25",array[0]);
-        assertEquals("2022-11-07",array[1]);
-
-        //check with a zipcode that has no full vaccinations but still appears with dates in the file
-        startDate = "2021-03-25";
-        endDate = "2021-11-05";
-        zipCode = "19108";
-        array = processor.findClosestDates(startDate, endDate, zipCode);
-        assertEquals("2021-03-25",array[0]);
-        assertEquals("2021-11-05",array[1]);
+        assertEquals("2021-03-25", array[0]);
+        assertEquals("2022-11-07", array[1]);
 
         //check with a completely null zipcode for these dates
         startDate = "2021-03-25";
         endDate = "2022-05-01";
         zipCode = "19199";
-        array = processor.findClosestDates(startDate,endDate,zipCode);
-        assertEquals(array,null);
+        array = processor.findClosestDates(startDate, endDate, zipCode);
+        assertEquals(array, null);
 
         //check with a regular zip code that has data throughout the dates
         startDate = "2021-02-25";
         endDate = "2022-11-07";
         zipCode = "19102";
-        array = processor.findClosestDates(startDate,endDate,zipCode);
-        assertEquals("2021-03-25",array[0]);
-        assertEquals("2022-11-07",array[1]);
+        array = processor.findClosestDates(startDate, endDate, zipCode);
+        assertEquals("2021-03-25", array[0]);
+        assertEquals("2022-11-07", array[1]);
 
         //test case where next closest date for each one ends up being the same date (2022-11-07) so array is null
         startDate = "2022-11-01";
         endDate = "2022-11-10";
         zipCode = "19102";
-        array = processor.findClosestDates(startDate,endDate,zipCode);
-        assertEquals(array,null);
+        array = processor.findClosestDates(startDate, endDate, zipCode);
+        assertEquals(array, null);
+
+        //test case where the algorithm skips over a non null date because total vaxx is 0, matches it to next closest date, both starting dates null
+        startDate = "2021-09-26";
+        endDate = "2021-11-20";
+        zipCode = "19102";
+        array = processor.findClosestDates(startDate, endDate, zipCode);
+        assertEquals("2021-09-29",array[0]);
+        assertEquals("2021-11-18",array[1]);
+
+        //both starting dates are valid, but they have total vaxx == 0
+        startDate = "2021-09-28";
+        endDate = "2021-11-19";
+        zipCode = "19102";
+        array = processor.findClosestDates(startDate, endDate, zipCode);
+        assertEquals("2021-09-29",array[0]);
+        assertEquals("2021-11-18",array[1]);
+
+        //end date has 0 vax, starting date != 0, end date should move up to 9/1/2021
+        startDate = "2021-07-01";
+        endDate = "2021-09-02";
+        zipCode = "19111";
+        array = processor.findClosestDates(startDate, endDate, zipCode);
+        assertEquals("2021-07-01",array[0]);
+        assertEquals("2021-09-01",array[1]);
+
+        //start date == 0, end date == null
+        startDate = "2021-09-06";
+        endDate = "2021-09-18";
+        zipCode = "19111";
+        array = processor.findClosestDates(startDate, endDate, zipCode);
+        assertEquals("2021-09-07",array[0]);
+        assertEquals("2021-09-17",array[1]);
+
+        //both null, need to move both pointers skipping over null dates & 0 full vax dates
+        startDate = "2021-09-04";
+        endDate = "2021-11-20";
+        zipCode = "19115";
+        array = processor.findClosestDates(startDate, endDate, zipCode);
+        assertEquals("2021-09-07",array[0]);
+        assertEquals("2021-11-18",array[1]);
+
+        //test perfectly valid case, no 0 or null
+        startDate = "2021-07-12";
+        endDate = "2021-07-15";
+        zipCode = "19115";
+        array = processor.findClosestDates(startDate, endDate, zipCode);
+        assertEquals("2021-07-12",array[0]);
+        assertEquals("2021-07-15",array[1]);
+
+        //good example test case of skipping over multiple dates with 0
+        startDate = "2022-05-01";
+        endDate = "2022-06-01";
+        zipCode = "19102";
+        array = processor.findClosestDates(startDate, endDate, zipCode);
+        assertEquals("2022-05-01",array[0]);
+        assertEquals("2022-05-23",array[1]);
     }
 }

@@ -75,8 +75,8 @@ public class Processor {
         }catch(DateTimeParseException e) {
             return null;
         }
-        if (startCovid == null && endCovid != null) {
-            while (startCovid == null) {
+        if ((startCovid == null || startCovid.getFullyVaccinated() == 0) && (endCovid != null && endCovid.getFullyVaccinated() != 0)) {
+            while (startCovid == null || startCovid.getFullyVaccinated() == 0) {
                 beginDate = beginDate.plusDays(1);
                 String newStartDate = beginDate.toString();
                 startCovid = data.get(zipCode).getCovidCases().getOrDefault(newStartDate, null);
@@ -85,8 +85,8 @@ public class Processor {
             dateArray[0] = beginDate.toString();
             dateArray[1] = endDate;
             return dateArray;
-        }else if (endCovid == null && startCovid != null) {
-            while (endCovid == null) {
+        }else if ((endCovid == null || endCovid.getFullyVaccinated() == 0) && (startCovid != null && startCovid.getFullyVaccinated() != 0)) {
+            while (endCovid == null || endCovid.getFullyVaccinated() == 0) {
                 endingDate = endingDate.minusDays(1);
                 String newEndDate = endingDate.toString();
                 endCovid = data.get(zipCode).getCovidCases().getOrDefault(newEndDate, null);
@@ -95,25 +95,20 @@ public class Processor {
             dateArray[0] = startDate;
             dateArray[1] = endingDate.toString();
             return dateArray;
-        }else if (startCovid == null && endCovid == null) {
-            while (startCovid == null || endCovid == null) {
-                if (startCovid == null) {
+        }else if ((startCovid == null || startCovid.getFullyVaccinated() == 0) && (endCovid == null || endCovid.getFullyVaccinated() == 0)) {
+            while (true) {
+                if (startCovid == null || startCovid.getFullyVaccinated() == 0) {
                     beginDate = beginDate.plusDays(1);
                     String newStartDate = beginDate.toString();
-                    Covid newStartCovid = data.get(zipCode).getCovidCases().getOrDefault(newStartDate, null);
-                    if (newStartCovid != null) {
-                        startCovid = newStartCovid;
-                    }
+                    startCovid = data.get(zipCode).getCovidCases().getOrDefault(newStartDate, null);
                 }
-                if (endCovid == null) {
+                if (endCovid == null || endCovid.getFullyVaccinated() == 0) {
                     endingDate = endingDate.minusDays(1);
                     String newEndDate = endingDate.toString();
-                    Covid newEndCovid = data.get(zipCode).getCovidCases().getOrDefault(newEndDate, null);
-                    if (newEndCovid != null) {
-                        endCovid = newEndCovid;
-                    }
+                    endCovid = data.get(zipCode).getCovidCases().getOrDefault(newEndDate, null);
                 }
                 if (beginDate.compareTo(endingDate) == 0 || beginDate.compareTo(endingDate) > 0) return null;
+                if (startCovid != null && endCovid != null && startCovid.getFullyVaccinated() > 0 && endCovid.getFullyVaccinated() > 0) break;
             }
             dateArray[0] = beginDate.toString();
             dateArray[1] = endingDate.toString();
