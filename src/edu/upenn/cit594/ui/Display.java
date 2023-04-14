@@ -279,7 +279,7 @@ public class Display {
         arrowPrinter();
         String zipCode = scanner.next();
         log.writeToLog(zipCode);
-        //we're looking for 5 digit pattern, otherwise user will be repompted
+        //we're looking for 5 digit pattern, otherwise user will be reprompted
         while(!zipCode.matches("^\\d{5}$")) {
             System.out.println("Please enter a 5 digit ZIP code");
             arrowPrinter();
@@ -322,7 +322,6 @@ public class Display {
      * @param log logger to log inputs
      */
     public void printTotalMarketValuePerCapita(Logger log) {
-
         System.out.println("Please specify the 5 digit ZIP code for which you would like to see total market value per capita");
         arrowPrinter();
         String nextZip = scanner.next();
@@ -366,21 +365,25 @@ public class Display {
                 "\nIf a particular ZIP code has no data for the dates you give, we will retrieve the data from the closest dates");
         System.out.println();
         System.out.println("Please enter the start date in YYYY-MM-DD format");
+        arrowPrinter();
         String startDate = scanner.next();
         log.writeToLog(startDate);
 
         while(!validateDateInfo(startDate)) {
             System.out.println("Please try again: (format YYYY-MM-DD)");
+            arrowPrinter();
             startDate = scanner.next();
             log.writeToLog(startDate);
         }
 
         System.out.println("Please enter the end date in YYYY-MM-DD format");
+        arrowPrinter();
         String endDate = scanner.next();
         log.writeToLog(endDate);
 
         while(!validateDateInfo(endDate)) {
             System.out.println("Please try again: (format YYYY-MM-DD)");
+            arrowPrinter();
             endDate = scanner.next();
             log.writeToLog(endDate);
         }
