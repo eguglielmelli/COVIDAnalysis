@@ -11,7 +11,7 @@ integrity violations. Please see the Course Syllabus as well as the
 university code of academic integrity:
  https://catalog.upenn.edu/pennbook/code-of-academic-integrity/ >
 Signed,
-Team: ###
+Team: 079
 
 Author: Gus Busolo
 Penn email: gusmbus@seas.upenn.edu
