@@ -138,7 +138,7 @@ public class Display {
 
         System.out.println("partial or full");
         arrowPrinter();
-        String next = scanner.next().toLowerCase(Locale.ROOT);
+        String next = scanner.next();
         log.writeToLog(next);
         System.out.println();
 
