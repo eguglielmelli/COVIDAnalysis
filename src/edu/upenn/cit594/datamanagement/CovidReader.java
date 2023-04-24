@@ -1,5 +1,6 @@
 package edu.upenn.cit594.datamanagement;
 
+import java.util.HashMap;
 import java.util.TreeMap;
 import edu.upenn.cit594.util.Zip;
 
@@ -23,8 +24,8 @@ public class CovidReader extends GeneralReader {
 	private String filename;
 	
 	// Constructor: requires the filename to read from and the data structure to add items to
-	protected CovidReader(String input, TreeMap<String, Zip> data) throws Exception {
-		this.filename = input;
+	protected CovidReader(HashMap<String, String> arguments, TreeMap<String, Zip> data) throws Exception {
+		this.filename = arguments.get("covidFilename");
 		readCovid(data);
 	}
 	

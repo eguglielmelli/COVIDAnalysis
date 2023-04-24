@@ -2,8 +2,8 @@ package edu.upenn.cit594.datamanagement;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.HashMap;
 import java.util.TreeMap;
-
 import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.util.Zip;
 
@@ -16,8 +16,8 @@ public class PopulationReader extends GeneralReader {
 	private String filename;
 	
 	// Constructor: requires the filename to read from and the data structure to add items to
-	protected PopulationReader(String input, TreeMap<String, Zip> data) throws Exception {
-		this.filename = input;
+	protected PopulationReader(HashMap<String, String> arguments, TreeMap<String, Zip> data) throws Exception {
+		this.filename = arguments.get("populationFilename");
 		readPopulation(data);
 	}
 	

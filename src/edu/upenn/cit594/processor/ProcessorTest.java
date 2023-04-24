@@ -1,13 +1,12 @@
 package edu.upenn.cit594.processor;
+
+import edu.upenn.cit594.Main;
 import edu.upenn.cit594.datamanagement.Reader;
 import edu.upenn.cit594.util.Zip;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProcessorTest {
@@ -17,7 +16,9 @@ class ProcessorTest {
         //test case where we have population and property files only
         //this gives the user access to functions 0,1,2,4,5,6
         String[] arguments = {"--population=population.csv","--properties=downsampled_properties.csv"};
-        Reader reader = new Reader(arguments);
+	    Main.resetValidArguments();
+		Main.setInputs(arguments);
+        Reader reader = new Reader(Main.getValidArguments());
         Processor processor = new Processor(reader);
         List<Integer> list = processor.getAvailableActions();
         assertTrue(list.size() == 6);
@@ -27,7 +28,9 @@ class ProcessorTest {
         //0,1,2,3,4,5,6,7
         String[] arguments1 = {"--population=population.csv",
                 "--covid=covid_data.csv","--properties=downsampled_properties.csv"};
-        Reader reader1 = new Reader(arguments1);
+	    Main.resetValidArguments();
+		Main.setInputs(arguments1);
+        Reader reader1 = new Reader(Main.getValidArguments());
         Processor processor1 = new Processor(reader1);
         List<Integer> list1 = processor1.getAvailableActions();
         assertTrue(list1.size() == 8);
@@ -35,14 +38,18 @@ class ProcessorTest {
         //Case where there are no valid files, the list should still contain 0 and 1,
         //as these are always in there by default
         String[] arguments2 = {};
-        Reader reader2 = new Reader(arguments2);
+	    Main.resetValidArguments();
+		Main.setInputs(arguments2);
+        Reader reader2 = new Reader(Main.getValidArguments());
         Processor processor2 = new Processor(reader2);
         List<Integer> list2 = processor2.getAvailableActions();
         assertTrue(list2.size() == 2);
 
         //only covid file, should be 0 and 1 because covid computations require total population
         String[] arguments3 = {"--covid=covid_data.csv"};
-        Reader reader3 = new Reader(arguments3);
+	    Main.resetValidArguments();
+		Main.setInputs(arguments3);
+        Reader reader3 = new Reader(Main.getValidArguments());
         Processor processor3 = new Processor(reader3);
         List<Integer> list3 = processor3.getAvailableActions();
         assertTrue(list3.size() == 2);
@@ -53,7 +60,9 @@ class ProcessorTest {
     void getVaccinationIncreaseForDate() throws Exception {
         String[] arguments = {"--population=population.csv",
                 "--covid=covid_data.csv","--properties=downsampled_properties.csv"};
-        Reader reader = new Reader(arguments);
+	    Main.resetValidArguments();
+		Main.setInputs(arguments);
+        Reader reader = new Reader(Main.getValidArguments());
         Processor processor = new Processor(reader);
         TreeMap<String,Zip> data = reader.getData();
         CovidProcessor covidProcessor = new CovidProcessor(data);
@@ -115,10 +124,10 @@ class ProcessorTest {
     void findClosestDates() throws Exception {
         String[] arguments = {"--population=population.csv",
                 "--covid=covid_data.csv", "--properties=downsampled_properties.csv"};
-        Reader reader = new Reader(arguments);
+	    Main.resetValidArguments();
+		Main.setInputs(arguments);
+        Reader reader = new Reader(Main.getValidArguments());
         Processor processor = new Processor(reader);
-        TreeMap<String, Zip> data = reader.getData();
-        CovidProcessor covidProcessor = new CovidProcessor(data);
         //test case with zip 19147, start of data for this zip is 3/25/2021, and date closest to end date is 2/11/2022
         //case where both start and end date are null, so we need to adjust both pointers
         String startDate = "2021-02-25";

@@ -1,7 +1,6 @@
 package edu.upenn.cit594.processor;
 
 import java.util.*;
-
 import edu.upenn.cit594.util.Zip;
 
 public class PopulationProcessor {

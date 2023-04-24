@@ -1,14 +1,11 @@
 package edu.upenn.cit594.datamanagement;
 
 import java.io.FileReader;
-import java.util.HashMap;
 import java.util.TreeMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
 import edu.upenn.cit594.logging.Logger;
-import edu.upenn.cit594.util.Covid;
 import edu.upenn.cit594.util.Zip;
 
 /**
@@ -77,42 +74,6 @@ public class CovidJSONReader extends GeneralReader {
 	    // Generalize all error messages to a human readable error pinpointing where the issue is
         } catch (Exception e) {
 			throw new Exception("Error reading Covid Json file. Program exiting...");
-		}
-	}
-	
-	/**
-	 * This helper function adds the validated data into the data structure
-	 * @param zip (String) : validated Zip of this Covid data
-	 * @param date : validated Date of this Covid data
-	 * @param partiallyVaccinated (int) : number of partially vaccinated people in a given date
-	 * @param fullyVaccinated (int) : number of fully vaccinated people in a given date
-	 * @param data
-	 */
-	private void addCovidToData(String zip, String date, int partiallyVaccinated, int fullyVaccinated, TreeMap<String, Zip> data) {
-		// Otherwise, check whether the Zip code already exist in data and add it if it does not
-		if(!data.containsKey(zip)) {
-			data.put(zip, new Zip(zip));
-		}
-		
-		// Get the map with the covid cases for the given zip code
-		HashMap<String, Covid> covidCases = data.get(zip).getCovidCases();
-		
-		// If the map does not contain Covid cases for given date, then create one
-		if(!covidCases.containsKey(date)) {
-			covidCases.put(date, new Covid(date));
-		}
-		
-		// Retrieve cases for given date
-		Covid cases = covidCases.get(date);
-		
-		// Add partially vaccinated if it is valid integer
-		if(partiallyVaccinated != -1) {
-			cases.setPartiallyVaccinated(partiallyVaccinated);
-		}
-		
-		// Add fully vaccinated if it is valid integer
-		if(fullyVaccinated != -1) {
-			cases.setFullyVaccinated(fullyVaccinated);
 		}
 	}
 }

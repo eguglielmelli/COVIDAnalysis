@@ -1,6 +1,7 @@
 package edu.upenn.cit594.datamanagement;
 
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.HashMap;
 import java.util.TreeMap;
 import org.junit.jupiter.api.Test;
 import edu.upenn.cit594.util.Zip;
@@ -11,8 +12,10 @@ class PropertyReaderTest {
 	@Test
 	void testProperties1() throws Exception {
 		TreeMap<String, Zip> data = new TreeMap<String, Zip>();
+		HashMap<String, String> arguments = new HashMap<String, String>();
+		arguments.put("propertyFilename", "./testFiles/properties1.csv");
 	    Exception e = assertThrows(Exception.class, () -> {
-	    	new PropertyReader("./testFiles/properties1.csv", data);
+	    	new PropertyReader(arguments, data);
 	    });
 	    assertEquals("Error reading property file. Program exiting...", e.getMessage());
 	}
@@ -22,7 +25,9 @@ class PropertyReaderTest {
 	@Test
 	void testProperties2() throws Exception {
 		TreeMap<String, Zip> data = new TreeMap<String, Zip>();
-		PropertyReader reader = new PropertyReader("./testFiles/properties2.csv", data);
+		HashMap<String, String> arguments = new HashMap<String, String>();
+		arguments.put("propertyFilename", "./testFiles/properties2.csv");
+		PropertyReader reader = new PropertyReader(arguments, data);
 		assertEquals(data.size(), 3);
 		assertTrue(data.containsKey("19101"));
 		assertTrue(data.get("19101").getTotalArea().get(0) == 100.0);
@@ -41,7 +46,9 @@ class PropertyReaderTest {
 	@Test
 	void testProperties3() throws Exception {
 		TreeMap<String, Zip> data = new TreeMap<String, Zip>();
-		PropertyReader reader = new PropertyReader("./testFiles/properties3.csv", data);
+		HashMap<String, String> arguments = new HashMap<String, String>();
+		arguments.put("propertyFilename", "./testFiles/properties3.csv");
+		PropertyReader reader = new PropertyReader(arguments, data);
 		assertEquals(data.size(), 2);
 		assertFalse(data.containsKey("1914"));
 		assertFalse(data.containsKey("1tenten"));
@@ -63,5 +70,4 @@ class PropertyReaderTest {
 		assertTrue(data.get("19101").getMarketValue().get(2) == 300);
 
 	}
-
 }

@@ -1,4 +1,5 @@
 package edu.upenn.cit594.processor;
+
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +50,4 @@ public class CovidProcessor {
 		if(fullyVaccinatedStart == 0 || fullyVaccinatedEnd == 0) return 0;
 		return ((fullyVaccinatedEnd-fullyVaccinatedStart)/fullyVaccinatedStart)*100;
 	}
-	
-
 }

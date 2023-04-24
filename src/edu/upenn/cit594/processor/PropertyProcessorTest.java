@@ -1,12 +1,11 @@
 package edu.upenn.cit594.processor;
 
+import edu.upenn.cit594.Main;
 import edu.upenn.cit594.datamanagement.Reader;
 import edu.upenn.cit594.util.Zip;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
 import java.util.TreeMap;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class PropertyProcessorTest {
@@ -14,7 +13,9 @@ class PropertyProcessorTest {
     @Test
     void averagePropertyValue() throws Exception {
         String[] arguments = {"--population=population.csv","--properties=downsampled_properties.csv"};
-        Reader reader = new Reader(arguments);
+	    Main.resetValidArguments();
+		Main.setInputs(arguments);
+        Reader reader = new Reader(Main.getValidArguments());
         TreeMap<String, Zip> map = reader.getData();
         PropertyProcessor propertyProcessor = new PropertyProcessor(map);
 
@@ -35,7 +36,9 @@ class PropertyProcessorTest {
     @Test
     void averageTotalLivableArea() throws Exception {
         String[] arguments = {"--population=population.csv","--properties=downsampled_properties.csv"};
-        Reader reader = new Reader(arguments);
+	    Main.resetValidArguments();
+		Main.setInputs(arguments);
+        Reader reader = new Reader(Main.getValidArguments());
         TreeMap<String, Zip> map = reader.getData();
         PropertyProcessor propertyProcessor = new PropertyProcessor(map);
 
@@ -55,7 +58,9 @@ class PropertyProcessorTest {
     @Test
     void totalMarketValuePerCapita() throws Exception {
         String[] arguments = {"--population=population.csv","--properties=downsampled_properties.csv"};
-        Reader reader = new Reader(arguments);
+	    Main.resetValidArguments();
+		Main.setInputs(arguments);
+        Reader reader = new Reader(Main.getValidArguments());
         TreeMap<String, Zip> map = reader.getData();
         PropertyProcessor propertyProcessor = new PropertyProcessor(map);
 
@@ -76,7 +81,9 @@ class PropertyProcessorTest {
     @Test
     void calculateAvgVal() throws Exception{
         String[] arguments = {"--population=population.csv","--properties=downsampled_properties.csv"};
-        Reader reader = new Reader(arguments);
+	    Main.resetValidArguments();
+		Main.setInputs(arguments);
+        Reader reader = new Reader(Main.getValidArguments());
         TreeMap<String, Zip> map = reader.getData();
         PropertyProcessor propertyProcessor = new PropertyProcessor(map);
 

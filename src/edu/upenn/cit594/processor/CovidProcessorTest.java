@@ -1,8 +1,8 @@
 package edu.upenn.cit594.processor;
 
+import edu.upenn.cit594.Main;
 import edu.upenn.cit594.datamanagement.Reader;
 import edu.upenn.cit594.util.Zip;
-import jdk.swing.interop.SwingInterOpUtils;
 import org.junit.jupiter.api.Test;
 import java.util.TreeMap;
 
@@ -13,7 +13,9 @@ class CovidProcessorTest {
     @Test
     void vaccinationsPerCapita() throws Exception {
         String[] arguments = {"--population=population.csv","--covid=covid_data.csv"};
-        Reader reader = new Reader(arguments);
+	    Main.resetValidArguments();
+		Main.setInputs(arguments);
+        Reader reader = new Reader(Main.getValidArguments());
         TreeMap<String, Zip> data = reader.getData();
         CovidProcessor cProcessor = new CovidProcessor(data);
 
@@ -41,7 +43,9 @@ class CovidProcessorTest {
     @Test
     void vaccinationIncrease() throws Exception {
         String[] arguments = {"--population=population.csv","--covid=covid_data.csv"};
-        Reader reader = new Reader(arguments);
+	    Main.resetValidArguments();
+		Main.setInputs(arguments);
+        Reader reader = new Reader(Main.getValidArguments());
         TreeMap<String, Zip> data = reader.getData();
         CovidProcessor cProcessor = new CovidProcessor(data);
 

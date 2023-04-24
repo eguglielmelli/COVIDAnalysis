@@ -2,9 +2,13 @@ package edu.upenn.cit594.datamanagement;
 
 import java.io.BufferedReader;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
+import edu.upenn.cit594.util.Covid;
+import edu.upenn.cit594.util.Zip;
 
 /**
  * This superclass has utility methods that are needed by the specific readers,
@@ -219,5 +223,41 @@ public class GeneralReader {
 		}
 		
 		return validatedDate;
+	}
+	
+	/**
+	 * This helper function adds the validated data into the data structure
+	 * @param zip (String) : validated Zip of this Covid data
+	 * @param date : validated Date of this Covid data
+	 * @param partiallyVaccinated (int) : number of partially vaccinated people in a given date
+	 * @param fullyVaccinated (int) : number of fully vaccinated people in a given date
+	 * @param data
+	 */
+	protected void addCovidToData(String zip, String date, int partiallyVaccinated, int fullyVaccinated, TreeMap<String, Zip> data) {
+		// Otherwise, check whether the Zip code already exist in data and add it if it does not
+		if(!data.containsKey(zip)) {
+			data.put(zip, new Zip(zip));
+		}
+		
+		// Get the map with the covid cases for the given zip code
+		HashMap<String, Covid> covidCases = data.get(zip).getCovidCases();
+		
+		// If the map does not contain Covid cases for given date, then create one
+		if(!covidCases.containsKey(date)) {
+			covidCases.put(date, new Covid(date));
+		}
+		
+		// Retrieve cases for given date
+		Covid cases = covidCases.get(date);
+		
+		// Add partially vaccinated if it is valid integer
+		if(partiallyVaccinated != -1) {
+			cases.setPartiallyVaccinated(partiallyVaccinated);
+		}
+		
+		// Add fully vaccinated if it is valid integer
+		if(fullyVaccinated != -1) {
+			cases.setFullyVaccinated(fullyVaccinated);
+		}
 	}
 }

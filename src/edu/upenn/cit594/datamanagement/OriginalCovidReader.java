@@ -2,14 +2,11 @@ package edu.upenn.cit594.datamanagement;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.HashMap;
 import java.util.TreeMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
 import edu.upenn.cit594.logging.Logger;
-import edu.upenn.cit594.util.Covid;
 import edu.upenn.cit594.util.Zip;
 
 /**
@@ -149,6 +146,7 @@ public class OriginalCovidReader extends GeneralReader {
 		}
 	}
 	
+	// This class had to be moved to General Reader in the new implementation
 	/**
 	 * This helper function adds the validated data into the data structure
 	 * @param zip (String) : validated Zip of this Covid data
@@ -156,7 +154,7 @@ public class OriginalCovidReader extends GeneralReader {
 	 * @param partiallyVaccinated (int) : number of partially vaccinated people in a given date
 	 * @param fullyVaccinated (int) : number of fully vaccinated people in a given date
 	 * @param data
-	 */
+	 *
 	private void addCovidToData(String zip, String date, int partiallyVaccinated, int fullyVaccinated, TreeMap<String, Zip> data) {
 		// Otherwise, check whether the Zip code already exist in data and add it if it does not
 		if(!data.containsKey(zip)) {
@@ -184,4 +182,5 @@ public class OriginalCovidReader extends GeneralReader {
 			cases.setFullyVaccinated(fullyVaccinated);
 		}
 	}
+	*/
 }

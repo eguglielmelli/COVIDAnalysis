@@ -1,4 +1,5 @@
 package edu.upenn.cit594.processor;
+
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -140,5 +141,4 @@ public class Processor {
         memoTable.put(key,marketValueVaxxIncrease);
         return marketValueVaxxIncrease;
     }
-   
 }

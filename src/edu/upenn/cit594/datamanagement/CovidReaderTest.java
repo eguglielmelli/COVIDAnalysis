@@ -1,11 +1,9 @@
 package edu.upenn.cit594.datamanagement;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+import java.util.HashMap;
 import java.util.TreeMap;
-
 import org.junit.jupiter.api.Test;
-
 import edu.upenn.cit594.util.Zip;
 
 class CovidReaderTest {
@@ -14,8 +12,10 @@ class CovidReaderTest {
 	@Test
 	void testExtension() throws Exception {
 		TreeMap<String, Zip> data = new TreeMap<String, Zip>();
+		HashMap<String, String> arguments = new HashMap<String, String>();
+		arguments.put("covidFilename", "./testFiles/covid.txt");
 	    Exception e = assertThrows(Exception.class, () -> {
-	    	new CovidReader("./testFiles/covid.txt", data);
+	    	new CovidReader(arguments, data);
 	    });
 	    assertEquals("Unrecognized Covid file format. Program exiting...", e.getMessage());
 	}
@@ -24,8 +24,10 @@ class CovidReaderTest {
 	@Test
 	void testCSVCovid1() throws Exception {
 		TreeMap<String, Zip> data = new TreeMap<String, Zip>();
+		HashMap<String, String> arguments = new HashMap<String, String>();
+		arguments.put("covidFilename", "./testFiles/covid1.csv");
 	    Exception e = assertThrows(Exception.class, () -> {
-	    	new CovidReader("./testFiles/covid1.csv", data);
+	    	new CovidReader(arguments, data);
 	    });
 	    assertEquals("Error reading Covid Csv file. Program exiting...", e.getMessage());
 	}
@@ -36,7 +38,9 @@ class CovidReaderTest {
 	@Test
 	void testCSVCovid2() throws Exception {
 		TreeMap<String, Zip> data = new TreeMap<String, Zip>();
-		CovidReader reader = new CovidReader("./testFiles/covid2.csv", data);
+		HashMap<String, String> arguments = new HashMap<String, String>();
+		arguments.put("covidFilename", "./testFiles/covid2.csv");
+		CovidReader reader = new CovidReader(arguments, data);
 	    assertTrue(data.size() == 4);
 	    assertTrue(data.containsKey("19100"));
 	    assertTrue(data.get("19100").getCovidCases().containsKey("2021-03-25"));
@@ -66,7 +70,9 @@ class CovidReaderTest {
 	@Test
 	void testJSONCovid() throws Exception {
 		TreeMap<String, Zip> data = new TreeMap<String, Zip>();
-		CovidReader reader = new CovidReader("./testFiles/covid.json", data);
+		HashMap<String, String> arguments = new HashMap<String, String>();
+		arguments.put("covidFilename", "./testFiles/covid.json");
+		CovidReader reader = new CovidReader(arguments, data);
 	    assertTrue(data.size() == 4);
 	    assertTrue(data.containsKey("19100"));
 	    assertTrue(data.get("19100").getCovidCases().containsKey("2021-03-25"));

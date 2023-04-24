@@ -1,8 +1,8 @@
 package edu.upenn.cit594.ui;
+
 import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.processor.Processor;
 import java.util.*;
-
 
 public class Display {
     //create scanner to be used in many different methods

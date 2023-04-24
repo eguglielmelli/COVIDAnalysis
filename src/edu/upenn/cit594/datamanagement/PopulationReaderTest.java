@@ -1,11 +1,9 @@
 package edu.upenn.cit594.datamanagement;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+import java.util.HashMap;
 import java.util.TreeMap;
-
 import org.junit.jupiter.api.Test;
-
 import edu.upenn.cit594.util.Zip;
 
 class PopulationReaderTest {
@@ -14,8 +12,10 @@ class PopulationReaderTest {
 	@Test
 	void testPopulation1() throws Exception {
 		TreeMap<String, Zip> data = new TreeMap<String, Zip>();
+		HashMap<String, String> arguments = new HashMap<String, String>();
+		arguments.put("populationFilename", "./testFiles/population1.csv");
 	    Exception e = assertThrows(Exception.class, () -> {
-	    	new PopulationReader("./testFiles/population1.csv", data);
+	    	new PopulationReader(arguments, data);
 	    });
 	    assertEquals("Error reading population file. Program exiting...", e.getMessage());
 	}
@@ -26,7 +26,9 @@ class PopulationReaderTest {
 	@Test
 	void testPopulation2() throws Exception {
 		TreeMap<String, Zip> data = new TreeMap<String, Zip>();
-		PopulationReader reader = new PopulationReader("./testFiles/population2.csv", data);
+		HashMap<String, String> arguments = new HashMap<String, String>();
+		arguments.put("populationFilename", "./testFiles/population2.csv");
+		PopulationReader reader = new PopulationReader(arguments, data);
 	    assertTrue(data.size() == 3);
 	    assertEquals(data.get("19101").getTotalPopulation(), 10);
 	    assertEquals(data.get("19102").getTotalPopulation(), 20);

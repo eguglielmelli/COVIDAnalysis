@@ -3,7 +3,6 @@ package edu.upenn.cit594.logging;
 import static org.junit.Assert.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import org.junit.*;
 
 public class LoggerTest {
