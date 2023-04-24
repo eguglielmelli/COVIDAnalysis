@@ -8,10 +8,11 @@ import edu.upenn.cit594.ui.Display;
 
 public class Main {
 	
-	protected static HashMap<String, String> validArguments = new HashMap<String, String>();
+	protected static HashMap<String, String> validArguments;
 	
 	public static void main(String[] args) {	
 		try {
+			validArguments = new HashMap<String, String>();
 			setInputs(args);
 			Reader reader = new Reader(validArguments);
 			Processor processor = new Processor(reader);
@@ -67,7 +68,7 @@ public class Main {
 	}
 	
 	/**
-	 * Method to reset valid arguments, used during unit tests
+	 * Method to reset valid arguments, used during some unit tests that reuse the same main method
 	 */
 	public static void resetValidArguments() {
 		validArguments = new HashMap<String, String>();
